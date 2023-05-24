@@ -29,4 +29,6 @@
 - AWS
 - Jenkins
 - JPA
+- MySQL
+
 
