@@ -2,13 +2,18 @@ package com.house.rent.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter @Setter
 public class Member {
     @Id
-    private String id;
+    private Long id;
+    private String user_id;
     private String password;
     private String name;
     private String email;
@@ -16,31 +21,13 @@ public class Member {
     private LocalDateTime last_login_date;
     private LocalDateTime withdraw_date;
 
-    public String getId() {
-        return id;
+    public Member() {}
+
+    public Member(String user_id, String password, String name, String email) {
+        this.user_id = user_id;
+        this.password = password;
+        this.name = name;
+        this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public LocalDateTime getJoin_date() {
-        return join_date;
-    }
-
-    public LocalDateTime getLast_login_date() {
-        return last_login_date;
-    }
-
-    public LocalDateTime getWithdraw_date() {
-        return withdraw_date;
-    }
 }
