@@ -1,4 +1,4 @@
-package com.house.rent.controller;
+package com.org.houserent.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

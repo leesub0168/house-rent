@@ -1,11 +1,11 @@
-package com.house.rent.repository;
+package com.org.houserent.repository;
 
-import com.house.rent.domain.Member;
+import com.org.houserent.domain.Member;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
-@org.springframework.stereotype.Repository
+@Repository
 public class MemberRepository {
 
     @PersistenceContext

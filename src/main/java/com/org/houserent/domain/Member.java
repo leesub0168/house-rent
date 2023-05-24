@@ -1,8 +1,8 @@
-package com.house.rent.domain;
+package com.org.houserent.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter @Setter
 public class Member {
-    @Id
+    @Id @GeneratedValue
     private Long id;
     private String user_id;
     private String password;
