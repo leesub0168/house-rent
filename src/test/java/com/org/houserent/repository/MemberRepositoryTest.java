@@ -31,6 +31,6 @@ class MemberRepositoryTest {
         Member findMember = memberRepository.find(saveId);
 
         //then
-        assertTrue(member == findMember);
+        assertEquals(member, findMember);
     }
 }
