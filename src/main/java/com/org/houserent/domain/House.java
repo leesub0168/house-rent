@@ -1,21 +1,20 @@
 package com.org.houserent.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class House {
     @Id @GeneratedValue
     @Column(name = "house_id")
     private Long id;
-
-    private String city;
-
-    private String zipcode;
 
     private String building_year; // 건축년도
     private String building_name; // 건물명
@@ -34,4 +33,48 @@ public class House {
 
     @OneToMany(mappedBy = "house")
     private List<HouseContract> houseContractList = new ArrayList<>();
+
+    public House(String building_year, String building_name, String usage, String sgg_cd, String sgg_nm,
+                 String bjdong_cd, String bjdong_nm) {
+        this.building_year = building_year;
+        this.building_name = building_name;
+        this.usage = usage;
+        this.sgg_cd = sgg_cd;
+        this.sgg_nm = sgg_nm;
+        this.bjdong_cd = bjdong_cd;
+        this.bjdong_nm = bjdong_nm;
+    }
+
+    public House(String building_year, String building_name, String usage, String sgg_cd, String sgg_nm,
+                 String bjdong_cd, String bjdong_nm, String land_type) {
+        this.building_year = building_year;
+        this.building_name = building_name;
+        this.usage = usage;
+        this.sgg_cd = sgg_cd;
+        this.sgg_nm = sgg_nm;
+        this.bjdong_cd = bjdong_cd;
+        this.bjdong_nm = bjdong_nm;
+        this.land_type = land_type;
+    }
+
+    public House(String building_year, String building_name, String usage, String sgg_cd, String sgg_nm,
+                 String bjdong_cd, String bjdong_nm, String land_type, String title_num, String sub_num) {
+        this.building_year = building_year;
+        this.building_name = building_name;
+        this.usage = usage;
+        this.sgg_cd = sgg_cd;
+        this.sgg_nm = sgg_nm;
+        this.bjdong_cd = bjdong_cd;
+        this.bjdong_nm = bjdong_nm;
+        this.land_type = land_type;
+        this.title_num = title_num;
+        this.sub_num = sub_num;
+    }
+
+    public static House createHouse(String building_year, String building_name, String usage, String sgg_cd, String sgg_nm,
+                                    String bjdong_cd, String bjdong_nm) {
+        House house = new House(building_year, building_name, usage, sgg_cd, sgg_nm, bjdong_cd, bjdong_nm);
+
+        return house;
+    }
 }
