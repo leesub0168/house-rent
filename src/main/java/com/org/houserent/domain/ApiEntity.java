@@ -1,105 +1,85 @@
 package com.org.houserent.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 @Getter @Setter
+@Data
+@JsonNaming(PropertyNamingStrategies.UpperSnakeCaseStrategy.class)
 public class ApiEntity {
-    @JsonProperty("ACC_YEAR")
-    private String acc_year;
+    private String ACC_YEAR;
 
-    @JsonProperty("SGG_CD")
-    private String sgg_cd;
+    private String SGG_CD;
 
-    @JsonProperty("SGG_NM")
-    private String sgg_nm;
+    private String SGG_NM;
 
-    @JsonProperty("BJDONG_CD")
-    private String bjdong_cd;
+    private String BJDONG_CD;
 
-    @JsonProperty("BJDONG_NM")
-    private String bjdong_nm;
+    private String BJDONG_NM;
 
-    @JsonProperty("LAND_GBN")
-    private String land_gbn;
+    private String LAND_GBN;
 
-    @JsonProperty("LAND_GBN_NM")
-    private String land_gbn_nm;
+    private String LAND_GBN_NM;
 
-    @JsonProperty("BOBN")
-    private String bobn;
+    private String BOBN;
 
-    @JsonProperty("BUBN")
-    private String bubn;
+    private String BUBN;
 
-    @JsonProperty("FLR_NO")
-    private double flr_no;
+    private double FLR_NO;
 
-    @JsonProperty("CNTRCT_DE")
-    private String cntrct_de;
+    private String CNTRCT_DE;
 
-    @JsonProperty("RENT_GBN")
-    private String rent_gbn;
+    private String RENT_GBN;
 
-    @JsonProperty("RENT_AREA")
-    private double rent_area;
+    private double RENT_AREA;
 
-    @JsonProperty("RENT_GTN")
-    private String rent_gtn;
+    private String RENT_GTN;
 
-    @JsonProperty("RENT_FEE")
-    private String rent_fee;
+    private String RENT_FEE;
 
-    @JsonProperty("BLDG_NM")
-    private String bldg_nm;
+    private String BLDG_NM;
 
-    @JsonProperty("BUILD_YEAR")
-    private String build_year;
+    private String BUILD_YEAR;
 
-    @JsonProperty("HOUSE_GBN_NM")
-    private String house_gbn_nm;
+    private String HOUSE_GBN_NM;
 
-    @JsonProperty("CNTRCT_PRD")
-    private String cntrct_prd;
+    private String CNTRCT_PRD;
 
-    @JsonProperty("NEW_RON_SECD")
-    private String new_ron_secd;
+    private String NEW_RON_SECD;
 
-    @JsonProperty("CNTRCT_UPDT_RQEST_AT")
-    private String cntrct_updt_rqest_at;
+    private String CNTRCT_UPDT_RQEST_AT;
 
-    @JsonProperty("BEFORE_GRNTY_AMOUNT")
-    private String before_grnty_amount;
+    private String BEFORE_GRNTY_AMOUNT;
 
-    @JsonProperty("BEFORE_MT_RENT_CHRGE")
-    private String before_mt_rent_chrge;
+    private String BEFORE_MT_RENT_CHRGE;
 
     @Override
     public String toString() {
         return "ApiEntity{" +
-                "acc_year='" + acc_year + '\'' +
-                ", sgg_cd='" + sgg_cd + '\'' +
-                ", sgg_nm='" + sgg_nm + '\'' +
-                ", bjdong_cd='" + bjdong_cd + '\'' +
-                ", bjdong_nm='" + bjdong_nm + '\'' +
-                ", land_gbn='" + land_gbn + '\'' +
-                ", land_gbn_nm='" + land_gbn_nm + '\'' +
-                ", bobn='" + bobn + '\'' +
-                ", bubn='" + bubn + '\'' +
-                ", flr_no=" + flr_no +
-                ", cntrct_de='" + cntrct_de + '\'' +
-                ", rent_gbn='" + rent_gbn + '\'' +
-                ", rent_area=" + rent_area +
-                ", rent_gtn='" + rent_gtn + '\'' +
-                ", rent_fee='" + rent_fee + '\'' +
-                ", bldg_nm='" + bldg_nm + '\'' +
-                ", build_year='" + build_year + '\'' +
-                ", house_gbn_nm='" + house_gbn_nm + '\'' +
-                ", cntrct_prd='" + cntrct_prd + '\'' +
-                ", new_ron_secd='" + new_ron_secd + '\'' +
-                ", cntrct_updt_rqest_at='" + cntrct_updt_rqest_at + '\'' +
-                ", before_grnty_amount='" + before_grnty_amount + '\'' +
-                ", before_mt_rent_chrge='" + before_mt_rent_chrge + '\'' +
+                "ACC_YEAR='" + ACC_YEAR + '\'' +
+                ", SGG_CD='" + SGG_CD + '\'' +
+                ", SGG_NM='" + SGG_NM + '\'' +
+                ", BJDONG_CD='" + BJDONG_CD + '\'' +
+                ", BJDONG_NM='" + BJDONG_NM + '\'' +
+                ", LAND_GBN='" + LAND_GBN + '\'' +
+                ", LAND_GBN_NM='" + LAND_GBN_NM + '\'' +
+                ", BOBN='" + BOBN + '\'' +
+                ", BUBN='" + BUBN + '\'' +
+                ", FLR_NO=" + FLR_NO +
+                ", CNTRCT_DE='" + CNTRCT_DE + '\'' +
+                ", RENT_GBN='" + RENT_GBN + '\'' +
+                ", RENT_AREA=" + RENT_AREA +
+                ", RENT_GTN='" + RENT_GTN + '\'' +
+                ", RENT_FEE='" + RENT_FEE + '\'' +
+                ", BLDG_NM='" + BLDG_NM + '\'' +
+                ", BUILD_YEAR='" + BUILD_YEAR + '\'' +
+                ", HOUSE_GBN_NM='" + HOUSE_GBN_NM + '\'' +
+                ", CNTRCT_PRD='" + CNTRCT_PRD + '\'' +
+                ", NEW_RON_SECD='" + NEW_RON_SECD + '\'' +
+                ", CNTRCT_UPDT_RQEST_AT='" + CNTRCT_UPDT_RQEST_AT + '\'' +
+                ", BEFORE_GRNTY_AMOUNT='" + BEFORE_GRNTY_AMOUNT + '\'' +
+                ", BEFORE_MT_RENT_CHRGE='" + BEFORE_MT_RENT_CHRGE + '\'' +
                 '}';
     }
 }
