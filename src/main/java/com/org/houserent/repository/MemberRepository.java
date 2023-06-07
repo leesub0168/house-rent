@@ -21,11 +21,29 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
-    public List<Member> findByNameAndEmail(String name, String email) {
+    public List<Member> findByUserId(String userId) {
         return em.createQuery(
                 "select m from Member m" +
-                        " where m.name = :name" +
-                        "   and m.email = :email", Member.class)
+                        " where m.user_id = :userId", Member.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
+    public List<Member> findByUserIdAndPassword(String userId, String password) {
+        return em.createQuery(
+                        "select m from Member m" +
+                                " where m.user_id = :userId" +
+                                "   and m.password = :password", Member.class)
+                .setParameter("userId", userId)
+                .setParameter("password", password)
+                .getResultList();
+    }
+
+    public List<Member> findByNameAndEmail(String name, String email) {
+        return em.createQuery(
+                        "select m from Member m" +
+                                " where m.name = :name" +
+                                "   and m.email = :email", Member.class)
                 .setParameter("name", name)
                 .setParameter("email", email)
                 .getResultList();
@@ -33,7 +51,7 @@ public class MemberRepository {
 
     public List<Member> findAll() {
         return em.createQuery("select m from Member m", Member.class)
-            .getResultList();
+                .getResultList();
     }
 
 }
