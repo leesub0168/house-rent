@@ -2,6 +2,7 @@ package com.org.houserent.service;
 
 import com.org.houserent.domain.Member;
 import com.org.houserent.exception.DuplicateMemberException;
+import com.org.houserent.exception.WrongPasswordException;
 import com.org.houserent.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,12 +36,22 @@ public class MemberService {
     }
 
     public MemberDto login(String userId, String password) throws Exception {
-        List<Member> members = memberRepository.findByUserIdAndPassword(userId, password);
+        List<Member> members = memberRepository.findByUserId(userId);
         if (members.size() > 1) {
             throw new DuplicateMemberException("중복된 회원이 존재합니다.");
         }
+
         Member member = members.get(0);
+
+        validatePassword(password, member.getPassword());
+
         return new MemberDto(member);
+    }
+
+    private void validatePassword(String password, String memberPassword) throws Exception {
+        if (!memberPassword.equals(password)) {
+            throw new WrongPasswordException("잘못된 비밀번호 입니다.");
+        }
     }
 
     public MemberDto findMember(Long id) {
