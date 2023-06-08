@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -17,21 +16,24 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    private String user_id;
+    private String userId;
     private String password;
     private String name;
     private String email;
     private LocalDateTime join_date;
-    private LocalDateTime last_login_date;
     private LocalDateTime withdraw_date;
 
     public Member() {}
 
-    public Member(String user_id, String password, String name, String email) {
-        this.user_id = user_id;
+    public Member(String userId, String password, String name, String email, LocalDateTime join_date) {
+        this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
+        this.join_date = join_date;
     }
 
+    public void withDrawMember() {
+        this.withdraw_date = LocalDateTime.now();
+    }
 }

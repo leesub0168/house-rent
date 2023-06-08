@@ -27,7 +27,7 @@ public class MemberDto {
     public MemberDto(Member member) {
         this.name = member.getName();
         this.email = member.getEmail();
-        this.user_id = member.getUser_id();
+        this.user_id = member.getUserId();
         this.password = member.getPassword();
     }
 
