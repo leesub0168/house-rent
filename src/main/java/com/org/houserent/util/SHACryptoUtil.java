@@ -11,7 +11,7 @@ public class SHACryptoUtil {
     public static String encrypt(String value) {
         String result = "";
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
             byte[] digest = messageDigest.digest(value.getBytes());
             result = new String(digest);
         } catch (NoSuchAlgorithmException nae) {
