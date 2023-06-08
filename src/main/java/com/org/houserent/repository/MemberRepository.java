@@ -2,6 +2,7 @@ package com.org.houserent.repository;
 
 import com.org.houserent.domain.Member;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
@@ -21,36 +22,48 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
-    public List<Member> findByUserId(String userId) {
-        return em.createQuery(
-                "select m from Member m" +
-                        " where m.user_id = :userId", Member.class)
-                .setParameter("userId", userId)
-                .getResultList();
+    public Member findByUserId(String userId) {
+        try {
+            return em.createQuery(
+                            "select m from Member m" +
+                                    " where m.userId = :userId" +
+                                    "   and m.withdraw_date is null", Member.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+        } catch (NoResultException ne) {
+            return null;
+        }
     }
 
-    public List<Member> findByUserIdAndPassword(String userId, String password) {
-        return em.createQuery(
-                        "select m from Member m" +
-                                " where m.user_id = :userId" +
-                                "   and m.password = :password", Member.class)
-                .setParameter("userId", userId)
-                .setParameter("password", password)
-                .getResultList();
+    public Member findByUserIdAndPassword(String userId, String password) {
+        try {
+            return em.createQuery(
+                            "select m from Member m" +
+                                    " where m.userId = :userId" +
+                                    "   and m.password = :password" +
+                                    "   and m.withdraw_date is null ", Member.class)
+                    .setParameter("userId", userId)
+                    .setParameter("password", password)
+                    .getSingleResult();
+        } catch (NoResultException ne) {
+            return null;
+        }
     }
 
     public List<Member> findByNameAndEmail(String name, String email) {
         return em.createQuery(
                         "select m from Member m" +
                                 " where m.name = :name" +
-                                "   and m.email = :email", Member.class)
+                                "   and m.email = :email" +
+                                "   and m.withdraw_date is null ", Member.class)
                 .setParameter("name", name)
                 .setParameter("email", email)
                 .getResultList();
     }
 
     public List<Member> findAll() {
-        return em.createQuery("select m from Member m", Member.class)
+        return em.createQuery("select m from Member m " +
+                        "where m.withdraw_date is null ", Member.class)
                 .getResultList();
     }
 

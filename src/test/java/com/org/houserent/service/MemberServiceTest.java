@@ -1,6 +1,7 @@
 package com.org.houserent.service;
 
 import com.org.houserent.exception.DuplicateMemberException;
+import com.org.houserent.exception.NonExistMemberException;
 import com.org.houserent.exception.WrongPasswordException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,12 +21,12 @@ class MemberServiceTest {
     MemberService memberService;
 
     public MemberDto createMemberDTO() {
-        String userid = "leesub0168";
+        String userId = "leesub0168";
         String name = "이수빈";
         String password = "asgsdg";
         String email = "sdgsdg@naver.com";
 
-        return new MemberDto(userid, name, password, email);
+        return new MemberDto(userId, name, password, email);
     }
 
     @Test
@@ -67,7 +68,8 @@ class MemberServiceTest {
         MemberDto loginMember = memberService.login(memberDTO.getUser_id(), memberDTO.getPassword());
 
         //then
-        assertEquals(loginMember.getUser_id(), memberDTO.getUser_id());
+        assertEquals(loginMember.getName(), memberDTO.getName());
+        assertEquals(loginMember.getEmail(), memberDTO.getEmail());
     }
     
     @Test
@@ -81,6 +83,20 @@ class MemberServiceTest {
         
         //then
         assertThrows(WrongPasswordException.class, () -> memberService.login(memberDTO.getUser_id(), "wrongpwd"));
+    }
+    
+    @Test
+    @Transactional
+    public void 회원_탈퇴() throws Exception {
+        //given
+        MemberDto memberDTO = createMemberDTO();
+        memberService.joinMember(memberDTO);
+        
+        //when
+        memberService.withDrawMember(memberDTO.getUser_id(), memberDTO.getPassword());
+        
+        //then
+        assertThrows(NonExistMemberException.class, () -> memberService.login(memberDTO.getUser_id(), memberDTO.getPassword()));
     }
     
 }
