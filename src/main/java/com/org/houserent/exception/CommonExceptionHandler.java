@@ -30,4 +30,14 @@ public class CommonExceptionHandler {
                 .message(e.getMessage())
                 .build();
     }
+
+    @ExceptionHandler(NonExistMemberException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResultDto handleNonExistMemberException(Exception e) {
+        log.error("NonExistMemberException", e);
+        return ResultDto.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(e.getMessage())
+                .build();
+    }
 }
