@@ -1,10 +1,12 @@
 package com.org.houserent.controller;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ResultDto<T> {
     private HttpStatus status;
     private int status_code;
