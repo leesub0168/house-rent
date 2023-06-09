@@ -10,6 +10,9 @@ public class MemberRequestDto {
     private String name;
     private String email;
 
+    public MemberRequestDto() {
+    }
+
     public MemberRequestDto(String user_id, String password) {
         this.user_id = user_id;
         this.password = password;
