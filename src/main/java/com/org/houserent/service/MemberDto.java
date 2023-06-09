@@ -2,6 +2,7 @@ package com.org.houserent.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.org.houserent.domain.Member;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -12,13 +13,15 @@ public class MemberDto {
     private String password;
     private String email;
 
-    public MemberDto(String user_id, String name, String password, String email) {
+    @Builder
+    public MemberDto(String user_id, String name, String password, String email, String test) {
         this.user_id = user_id;
         this.name = name;
         this.password = password;
         this.email = email;
     }
 
+    @Builder
     public MemberDto(String name, String email) {
         this.name = name;
         this.email = email;

@@ -48,7 +48,10 @@ public class MemberService {
 
         validatePassword(password, member.getPassword());
 
-        return new MemberDto(member.getName(), member.getEmail());
+        return MemberDto.builder()
+                .name(member.getName())
+                .email(member.getEmail())
+                .build();
     }
 
     /**

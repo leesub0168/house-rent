@@ -25,7 +25,12 @@ class MemberServiceTest {
         String password = "asgsdg";
         String email = "sdgsdg@naver.com";
 
-        return new MemberDto(userId, name, password, email);
+        return MemberDto.builder()
+                .user_id(userId)
+                .name(name)
+                .password(password)
+                .email(email)
+                .build();
     }
 
     @Test
@@ -136,7 +141,12 @@ class MemberServiceTest {
 
         String newName = "testName";
         String email = "newMail@naver.com";
-        MemberDto newMemberDto = new MemberDto(memberDTO.getUser_id(), newName, memberDTO.getPassword(), email);
+        MemberDto newMemberDto = MemberDto.builder()
+                .user_id(memberDTO.getUser_id())
+                .name(newName)
+                .password(memberDTO.getPassword())
+                .email(email)
+                .build();
 
         //when
         memberService.updateMemberInfo(newMemberDto);
