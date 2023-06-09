@@ -18,11 +18,10 @@ public class MemberController {
 
     @PostMapping("/join")
     public ResultDto join(@RequestBody MemberRequestDto memberRequestDto) {
-        Long id = memberService.joinMember(memberRequestDto.toMemberDto());
+        memberService.joinMember(memberRequestDto.toMemberDto());
         return ResultDto.builder()
                 .status(HttpStatus.OK)
                 .message("가입되었습니다")
-                .data(id)
                 .build();
     }
 
@@ -34,6 +33,43 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .message("로그인 되었습니다.")
                 .data(memberResponseDto)
+                .build();
+    }
+
+    @PostMapping("/checkPassword")
+    public ResultDto checkPassword(@RequestBody MemberRequestDto memberRequestDto) {
+        memberService.checkPassword(memberRequestDto.getUser_id(), memberRequestDto.getPassword());
+
+        return ResultDto.builder()
+                .status(HttpStatus.OK)
+                .message("비밀번호가 일치합니다")
+                .build();
+    }
+
+    @PostMapping("/updateMemberInfo")
+    public ResultDto updateMemberInfo(@RequestBody MemberRequestDto memberRequestDto) {
+        memberService.updateMemberInfo(memberRequestDto.toMemberDto());
+        return ResultDto.builder()
+                .status(HttpStatus.OK)
+                .message("회원 정보가 수정되었습니다.")
+                .build();
+    }
+
+    @PostMapping("/updatePassword")
+    public ResultDto updatePassword(@RequestBody MemberRequestDto memberRequestDto) {
+        memberService.updatePassword(memberRequestDto.getUser_id(), memberRequestDto.getPassword());
+        return ResultDto.builder()
+                .status(HttpStatus.OK)
+                .message("비밀번호가 변경되었습니다.")
+                .build();
+    }
+
+    @PostMapping("/withDraw")
+    public ResultDto withDraw(@RequestBody MemberRequestDto memberRequestDto) {
+        memberService.withDrawMember(memberRequestDto.getUser_id(), memberRequestDto.getPassword());
+        return ResultDto.builder()
+                .status(HttpStatus.OK)
+                .message("탈퇴처리 되었습니다.")
                 .build();
     }
 }

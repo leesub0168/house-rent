@@ -36,9 +36,7 @@ public class MemberService {
      * */
     public void validateDuplicateUserId(String userId) {
         Member member = memberRepository.findByUserId(userId);
-        if(member != null) {
-            throw new DuplicateMemberException("이미 존재하는 회원입니다.");
-        }
+        if(member != null) throw new DuplicateMemberException("이미 존재하는 회원입니다.");
     }
 
     /**
@@ -46,11 +44,9 @@ public class MemberService {
      * */
     public MemberDto login(String userId, String password) {
         Member member = memberRepository.findByUserId(userId);
-        if (member == null) {
-            throw new NonExistMemberException("존재하지 않는 회원입니다");
-        }
+        if (member == null) throw new NonExistMemberException("존재하지 않는 회원입니다");
 
-        checkPassword(password, member.getPassword());
+        validatePassword(password, member.getPassword());
 
         return new MemberDto(member.getName(), member.getEmail());
     }
@@ -58,7 +54,7 @@ public class MemberService {
     /**
      * 비밀번호 일치 체크
      * */
-    private void checkPassword(String password, String memberPassword) {
+    private void validatePassword(String password, String memberPassword) {
         String encrypt = SHACryptoUtil.encrypt(password);
         if (!memberPassword.equals(encrypt)) {
             throw new WrongPasswordException("잘못된 비밀번호 입니다.");
@@ -66,29 +62,64 @@ public class MemberService {
     }
 
     /**
+     * 비밀번호 변경전 패스워드 검증
+     */
+
+    public void checkPassword(String userId, String password) {
+        Member member = memberRepository.findByUserId(userId);
+        if(member == null) throw new NonExistMemberException("존재하지 않는 회원입니다.");
+
+        validatePassword(password, member.getPassword());
+    }
+    
+
+    /**
      * id로 회원 조회
      * */
-    public MemberDto findMember(Long id) {
+    public MemberDto findMemberById(Long id) {
         Member findMember = memberRepository.findById(id);
         if(findMember == null) throw new NonExistMemberException("존재하지 않는 회원입니다.");
         return new MemberDto(findMember);
     }
-    
+
     /**
      * 회원 정보 수정
-     * */
+     */
+    @Transactional
+    public void updateMemberInfo(MemberDto memberDto) {
+        Member member = memberRepository.findByUserId(memberDto.getUser_id());
+        if (member == null) throw new NonExistMemberException("존재하지 않는 회원입니다");
+        member.updateMemberInfo(memberDto.getName(), memberDto.getEmail());
+    }
+
+    /**
+     * 비밀번호 변경
+     */
+    @Transactional
+    public void updatePassword(String userId, String newPassword) {
+        Member member = memberRepository.findByUserId(userId);
+        if (member == null) throw new NonExistMemberException("존재하지 않는 회원입니다");
+        String encrypted_password = SHACryptoUtil.encrypt(newPassword);
+        member.updatePassword(encrypted_password);
+    }
 
 
     /**
      * 회원 탈퇴
      */
+    @Transactional
     public void withDrawMember(String userId, String password) {
-        String encrypted_password = SHACryptoUtil.encrypt(password);
-        Member member = memberRepository.findByUserIdAndPassword(userId, encrypted_password);
-        if (member == null) {
-            throw new NonExistMemberException("존재하지 않는 회원입니다");
-        }
+        Member member = memberRepository.findByUserId(userId);
+        if (member == null) throw new NonExistMemberException("존재하지 않는 회원입니다");
+        validatePassword(password, member.getPassword());
+
         member.withDrawMember();
     }
 
+    public MemberDto findMemberByUserId(String userId) {
+        Member member = memberRepository.findByUserId(userId);
+        if (member == null) throw new NonExistMemberException("존재하지 않는 회원입니다");
+
+        return new MemberDto(member);
+    }
 }

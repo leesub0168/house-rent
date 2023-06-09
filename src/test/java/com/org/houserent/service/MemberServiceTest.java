@@ -36,7 +36,7 @@ class MemberServiceTest {
 
         //when
         Long memberId = memberService.joinMember(memberDTO);
-        MemberDto findMember = memberService.findMember(memberId);
+        MemberDto findMember = memberService.findMemberById(memberId);
 
         //then
         assertEquals(memberDTO.getUser_id(), findMember.getUser_id());
@@ -100,7 +100,7 @@ class MemberServiceTest {
 
     @Test
     @Transactional
-    public void 회원조회() throws Exception {
+    public void id로_회원조회() throws Exception {
         //given
         MemberDto memberDTO = createMemberDTO();
         memberService.joinMember(memberDTO);
@@ -109,6 +109,59 @@ class MemberServiceTest {
         Long id = Long.valueOf("1234");
 
         //then
-        assertThrows(NonExistMemberException.class, () -> memberService.findMember(id));
+        assertThrows(NonExistMemberException.class, () -> memberService.findMemberById(id));
+    }
+
+    @Test
+    @Transactional
+    public void 비밀번호_변경전_패스워드_검증() throws Exception {
+        //given
+        MemberDto memberDTO = createMemberDTO();
+        memberService.joinMember(memberDTO);
+
+        //when
+
+        //then
+        assertDoesNotThrow(
+                () -> memberService.checkPassword(memberDTO.getUser_id(), memberDTO.getPassword())
+        );
+    }
+
+    @Test
+    @Transactional
+    public void 회원정보_수정() throws Exception {
+        //given
+        MemberDto memberDTO = createMemberDTO();
+        memberService.joinMember(memberDTO);
+
+        String newName = "testName";
+        String email = "newMail@naver.com";
+        MemberDto newMemberDto = new MemberDto(memberDTO.getUser_id(), newName, memberDTO.getPassword(), email);
+
+        //when
+        memberService.updateMemberInfo(newMemberDto);
+        MemberDto findMember = memberService.findMemberByUserId(newMemberDto.getUser_id());
+
+        //then
+        assertAll(
+                () -> assertEquals(findMember.getEmail(), newMemberDto.getEmail()),
+                () -> assertEquals(findMember.getName(), newMemberDto.getName()),
+                () -> assertEquals(findMember.getUser_id(), newMemberDto.getUser_id())
+        );
+    }
+    
+    @Test
+    @Transactional
+    public void 비밀번호_변경() throws Exception {
+        //given
+        MemberDto memberDTO = createMemberDTO();
+        memberService.joinMember(memberDTO);
+        
+        //when
+        String newPassword = "newpassword";
+        memberService.updatePassword(memberDTO.getUser_id(), newPassword);
+
+        //then
+        assertDoesNotThrow(() -> memberService.login(memberDTO.getUser_id(), newPassword));
     }
 }
