@@ -10,8 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -98,5 +97,18 @@ class MemberServiceTest {
         //then
         assertThrows(NonExistMemberException.class, () -> memberService.login(memberDTO.getUser_id(), memberDTO.getPassword()));
     }
-    
+
+    @Test
+    @Transactional
+    public void 회원조회() throws Exception {
+        //given
+        MemberDto memberDTO = createMemberDTO();
+        memberService.joinMember(memberDTO);
+
+        //when
+        Long id = Long.valueOf("1234");
+
+        //then
+        assertThrows(NonExistMemberException.class, () -> memberService.findMember(id));
+    }
 }

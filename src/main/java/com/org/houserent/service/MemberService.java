@@ -70,7 +70,7 @@ public class MemberService {
      * */
     public MemberDto findMember(Long id) {
         Member findMember = memberRepository.findById(id);
-
+        if(findMember == null) throw new NonExistMemberException("존재하지 않는 회원입니다.");
         return new MemberDto(findMember);
     }
     
