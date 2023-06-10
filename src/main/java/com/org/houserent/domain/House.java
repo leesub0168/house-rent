@@ -1,16 +1,14 @@
 package com.org.houserent.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class House {
     @Id @GeneratedValue
     @Column(name = "house_id")
@@ -31,50 +29,33 @@ public class House {
     private String title_num; // 본번
     private String sub_num; // 부번
 
+    private String zipcode;
+
+    private String city;
+
+    private String gu;
+
+    private String dong;
+
+    private String road_name;
+
+    private String building_number;
+
+    private String detail_address;
+
     @OneToMany(mappedBy = "house")
-    private List<HouseContract> houseContractList = new ArrayList<>();
+    private List<HouseRentContract> houseRentContractList = new ArrayList<>();
 
-    public House(String building_year, String building_name, String usage, String sgg_cd, String sgg_nm,
-                 String bjdong_cd, String bjdong_nm) {
-        this.building_year = building_year;
-        this.building_name = building_name;
-        this.usage = usage;
-        this.sgg_cd = sgg_cd;
-        this.sgg_nm = sgg_nm;
-        this.bjdong_cd = bjdong_cd;
-        this.bjdong_nm = bjdong_nm;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        House house = (House) o;
+        return Objects.equals(id, house.id) && Objects.equals(building_year, house.building_year) && Objects.equals(building_name, house.building_name) && Objects.equals(usage, house.usage) && Objects.equals(sgg_cd, house.sgg_cd) && Objects.equals(sgg_nm, house.sgg_nm) && Objects.equals(bjdong_cd, house.bjdong_cd) && Objects.equals(bjdong_nm, house.bjdong_nm) && Objects.equals(land_type, house.land_type) && Objects.equals(title_num, house.title_num) && Objects.equals(sub_num, house.sub_num);
     }
 
-    public House(String building_year, String building_name, String usage, String sgg_cd, String sgg_nm,
-                 String bjdong_cd, String bjdong_nm, String land_type) {
-        this.building_year = building_year;
-        this.building_name = building_name;
-        this.usage = usage;
-        this.sgg_cd = sgg_cd;
-        this.sgg_nm = sgg_nm;
-        this.bjdong_cd = bjdong_cd;
-        this.bjdong_nm = bjdong_nm;
-        this.land_type = land_type;
-    }
-
-    public House(String building_year, String building_name, String usage, String sgg_cd, String sgg_nm,
-                 String bjdong_cd, String bjdong_nm, String land_type, String title_num, String sub_num) {
-        this.building_year = building_year;
-        this.building_name = building_name;
-        this.usage = usage;
-        this.sgg_cd = sgg_cd;
-        this.sgg_nm = sgg_nm;
-        this.bjdong_cd = bjdong_cd;
-        this.bjdong_nm = bjdong_nm;
-        this.land_type = land_type;
-        this.title_num = title_num;
-        this.sub_num = sub_num;
-    }
-
-    public static House createHouse(String building_year, String building_name, String usage, String sgg_cd, String sgg_nm,
-                                    String bjdong_cd, String bjdong_nm) {
-        House house = new House(building_year, building_name, usage, sgg_cd, sgg_nm, bjdong_cd, bjdong_nm);
-
-        return house;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, building_year, building_name, usage, sgg_cd, sgg_nm, bjdong_cd, bjdong_nm, land_type, title_num, sub_num);
     }
 }
