@@ -1,14 +1,13 @@
 package com.org.houserent.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.org.houserent.domain.ApiEntity;
-import com.org.houserent.domain.MappingEntity;
+import com.org.houserent.domain.publicApi.PublicApiDataEntity;
+import com.org.houserent.domain.publicApi.PublicApiMainEntity;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.net.URI;
-import java.time.Duration;
 
 public class PublicApiClient {
     private String publicApiUrl = "http://openapi.seoul.go.kr:8088";
@@ -23,16 +22,17 @@ public class PublicApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofMillis(10000))
+//                .timeout(Duration.ofMillis(10000))
                 .blockOptional().orElseThrow(
                         () -> new IllegalArgumentException("공공 api 호출 실패")
                 );
 
         ObjectMapper mapper = new ObjectMapper();
-        MappingEntity mappingEntity = mapper.readValue(str, MappingEntity.class);
+        PublicApiMainEntity publicApiMainEntity = mapper.readValue(str, PublicApiMainEntity.class);
 
-        for (ApiEntity apiEntity : mappingEntity.getTbLnOpendataRentV().getRow()) {
-            System.out.println(apiEntity.toString());
+        for (PublicApiDataEntity publicApiDataEntity : publicApiMainEntity.getTbLnOpendataRentV().getRow()) {
+            System.out.println(publicApiDataEntity.getACC_YEAR());
+            System.out.println(publicApiDataEntity.toString());
         }
 
     }
