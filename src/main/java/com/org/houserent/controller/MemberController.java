@@ -37,8 +37,8 @@ public class MemberController {
     }
 
     @PostMapping("/checkPassword")
-    public ResultDto checkPassword(@RequestBody MemberRequestDto memberRequestDto) {
-        memberService.checkPassword(memberRequestDto.getUser_id(), memberRequestDto.getPassword());
+    public ResultDto checkPasswordBeforeChangePassword(@RequestBody MemberRequestDto memberRequestDto) {
+        memberService.checkPasswordBeforeChangePassword(memberRequestDto.getUser_id(), memberRequestDto.getPassword());
 
         return ResultDto.builder()
                 .status(HttpStatus.OK)
@@ -55,9 +55,9 @@ public class MemberController {
                 .build();
     }
 
-    @PostMapping("/updatePassword")
-    public ResultDto updatePassword(@RequestBody MemberRequestDto memberRequestDto) {
-        memberService.updatePassword(memberRequestDto.getUser_id(), memberRequestDto.getPassword());
+    @PostMapping("/changePassword")
+    public ResultDto changePassword(@RequestBody MemberRequestDto memberRequestDto) {
+        memberService.changePassword(memberRequestDto.getUser_id(), memberRequestDto.getPassword());
         return ResultDto.builder()
                 .status(HttpStatus.OK)
                 .message("비밀번호가 변경되었습니다.")

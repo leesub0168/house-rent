@@ -128,7 +128,7 @@ class MemberServiceTest {
 
         //then
         assertDoesNotThrow(
-                () -> memberService.checkPassword(memberDTO.getUser_id(), memberDTO.getPassword())
+                () -> memberService.checkPasswordBeforeChangePassword(memberDTO.getUser_id(), memberDTO.getPassword())
         );
     }
 
@@ -169,7 +169,7 @@ class MemberServiceTest {
         
         //when
         String newPassword = "newpassword";
-        memberService.updatePassword(memberDTO.getUser_id(), newPassword);
+        memberService.changePassword(memberDTO.getUser_id(), newPassword);
 
         //then
         assertDoesNotThrow(() -> memberService.login(memberDTO.getUser_id(), newPassword));

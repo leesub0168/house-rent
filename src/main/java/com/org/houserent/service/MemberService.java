@@ -68,7 +68,7 @@ public class MemberService {
      * 비밀번호 변경전 패스워드 검증
      */
 
-    public void checkPassword(String userId, String password) {
+    public void checkPasswordBeforeChangePassword(String userId, String password) {
         Member member = memberRepository.findByUserId(userId);
         if(member == null) throw new NonExistMemberException("존재하지 않는 회원입니다.");
 
@@ -99,7 +99,7 @@ public class MemberService {
      * 비밀번호 변경
      */
     @Transactional
-    public void updatePassword(String userId, String newPassword) {
+    public void changePassword(String userId, String newPassword) {
         Member member = memberRepository.findByUserId(userId);
         if (member == null) throw new NonExistMemberException("존재하지 않는 회원입니다");
         String encrypted_password = SHACryptoUtil.encrypt(newPassword);
