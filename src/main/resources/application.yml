@@ -27,4 +27,4 @@ seoul-api:
 juso-api:
   baseUrl: "https://business.juso.go.kr/addrlink/addrLinkApi.do"
   key: "U01TX0FVVEgyMDIzMDYwNzE4MDcyNzExMzgzMTI="
-  dataType: "json"
+  resultType: "json"
