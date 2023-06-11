@@ -17,18 +17,14 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
 
-seoul:
-  public:
-    api:
-      base-url: "http://openapi.seoul.go.kr:8088"
-      key: "5a75446d6b6c656539375244465959"
-      type: "json"
-      rent: "tbLnOpendataRentV"
-      sale: "tbLnOpendataRtmsV"
+seoul-api:
+  baseUrl: "http://openapi.seoul.go.kr:8088"
+  key: "5a75446d6b6c656539375244465959"
+  dataType: "json"
+  rent: "tbLnOpendataRentV"
+  sale: "tbLnOpendataRtmsV"
 
-juso:
-  public:
-    api:
-      base-url: "https://business.juso.go.kr/addrlink/addrLinkApi.do"
-      key: "U01TX0FVVEgyMDIzMDYwNzE4MDcyNzExMzgzMTI"
-      type: "json"
+juso-api:
+  baseUrl: "https://business.juso.go.kr/addrlink/addrLinkApi.do"
+  key: "U01TX0FVVEgyMDIzMDYwNzE4MDcyNzExMzgzMTI="
+  dataType: "json"
