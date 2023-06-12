@@ -1,4 +1,4 @@
-package com.org.houserent.controller;
+package com.org.houserent.controller.dto.response;
 
 import lombok.Getter;
 

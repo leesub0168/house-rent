@@ -1,6 +1,6 @@
 package com.org.houserent.exception;
 
-import com.org.houserent.controller.ResultDto;
+import com.org.houserent.controller.dto.response.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,9 +13,9 @@ public class CommonExceptionHandler {
 
     @ExceptionHandler(DuplicateMemberException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResultDto handleDuplicateMemberException(Exception e) {
+    public ResponseDto handleDuplicateMemberException(Exception e) {
         log.error("DuplicateMemberException ", e);
-        return ResultDto.builder()
+        return ResponseDto.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .message(e.getMessage())
                 .build();
@@ -23,9 +23,9 @@ public class CommonExceptionHandler {
 
     @ExceptionHandler(WrongPasswordException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResultDto handleWrongPasswordException(Exception e) {
+    public ResponseDto handleWrongPasswordException(Exception e) {
         log.error("WrongPasswordException ", e);
-        return ResultDto.builder()
+        return ResponseDto.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .message(e.getMessage())
                 .build();
@@ -33,9 +33,9 @@ public class CommonExceptionHandler {
 
     @ExceptionHandler(NonExistMemberException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResultDto handleNonExistMemberException(Exception e) {
+    public ResponseDto handleNonExistMemberException(Exception e) {
         log.error("NonExistMemberException", e);
-        return ResultDto.builder()
+        return ResponseDto.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .message(e.getMessage())
                 .build();

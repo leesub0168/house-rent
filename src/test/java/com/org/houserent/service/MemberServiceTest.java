@@ -3,6 +3,7 @@ package com.org.houserent.service;
 import com.org.houserent.exception.DuplicateMemberException;
 import com.org.houserent.exception.NonExistMemberException;
 import com.org.houserent.exception.WrongPasswordException;
+import com.org.houserent.service.dto.MemberDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

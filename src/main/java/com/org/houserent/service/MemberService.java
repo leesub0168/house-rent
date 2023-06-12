@@ -5,6 +5,7 @@ import com.org.houserent.exception.DuplicateMemberException;
 import com.org.houserent.exception.NonExistMemberException;
 import com.org.houserent.exception.WrongPasswordException;
 import com.org.houserent.repository.MemberRepository;
+import com.org.houserent.service.dto.MemberDto;
 import com.org.houserent.util.SHACryptoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

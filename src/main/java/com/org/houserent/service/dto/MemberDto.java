@@ -1,4 +1,4 @@
-package com.org.houserent.service;
+package com.org.houserent.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.org.houserent.domain.Member;

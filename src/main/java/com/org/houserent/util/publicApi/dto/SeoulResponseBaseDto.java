@@ -1,4 +1,4 @@
-package com.org.houserent.domain.publicApi;
+package com.org.houserent.util.publicApi.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter @Setter
 @MappedSuperclass
 @JsonNaming(PropertyNamingStrategies.UpperSnakeCaseStrategy.class)
-public abstract class SeoulResponseBaseEntity {
+public abstract class SeoulResponseBaseDto {
     private String ACC_YEAR;
     private String SGG_CD;
     private String SGG_NM;

@@ -1,6 +1,6 @@
-package com.org.houserent.controller;
+package com.org.houserent.controller.dto.request;
 
-import com.org.houserent.service.MemberDto;
+import com.org.houserent.service.dto.MemberDto;
 import lombok.Getter;
 
 @Getter

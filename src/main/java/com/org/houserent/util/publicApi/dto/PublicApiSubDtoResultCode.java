@@ -1,4 +1,4 @@
-package com.org.houserent.domain.publicApi;
+package com.org.houserent.util.publicApi.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter @Setter
 @JsonNaming(PropertyNamingStrategies.UpperSnakeCaseStrategy.class)
-public class PublicApiSubEntityResultCode {
+public class PublicApiSubDtoResultCode {
 
     private String code;
     private String message;

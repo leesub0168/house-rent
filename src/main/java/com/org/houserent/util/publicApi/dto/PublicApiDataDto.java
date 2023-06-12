@@ -1,4 +1,4 @@
-package com.org.houserent.domain.publicApi;
+package com.org.houserent.util.publicApi.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -6,7 +6,7 @@ import lombok.*;
 
 @Getter @Setter
 @JsonNaming(PropertyNamingStrategies.UpperSnakeCaseStrategy.class)
-public class PublicApiDataEntity extends SeoulResponseBaseEntity {
+public class PublicApiDataDto extends SeoulResponseBaseDto {
 
     private String BOBN;
 

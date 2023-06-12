@@ -1,4 +1,4 @@
-package com.org.houserent.domain.publicApi;
+package com.org.houserent.util.publicApi.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,11 +9,11 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter @Setter
-public class PublicApiSubEntity {
+public class PublicApiSubDto {
     private int list_total_count;
 
     @JsonProperty("RESULT")
-    private PublicApiSubEntityResultCode result;
+    private PublicApiSubDtoResultCode result;
 
-    private List<PublicApiDataEntity> row;
+    private List<PublicApiDataDto> row;
 }
