@@ -21,12 +21,6 @@ public class MemberDto {
         this.email = email;
     }
 
-    @Builder
-    public MemberDto(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
-
     public MemberDto(Member member) {
         this.name = member.getName();
         this.email = member.getEmail();
