@@ -1,9 +1,6 @@
 package com.org.houserent.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -25,5 +22,9 @@ public class HouseSaleContract {
 
     private String declare_type;
     private String declare_estate_agent_address;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "house_id")
+    private House house;
 
 }
