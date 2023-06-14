@@ -1,14 +1,10 @@
 package com.org.houserent.repository;
 
 import com.org.houserent.domain.House;
-import com.org.houserent.domain.HouseRentContract;
-import com.org.houserent.domain.HouseSaleContract;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class HouseRepository {
