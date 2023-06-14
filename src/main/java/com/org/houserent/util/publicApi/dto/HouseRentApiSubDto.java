@@ -9,11 +9,11 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter @Setter
-public class PublicApiSubDto {
+public class HouseRentApiSubDto {
     private int list_total_count;
 
     @JsonProperty("RESULT")
-    private PublicApiSubDtoResultCode result;
+    private CommonApiSubDtoResultCode result;
 
-    private List<PublicApiDataDto> row;
+    private List<HouseRentApiDataDto> row;
 }
