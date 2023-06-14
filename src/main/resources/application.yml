@@ -20,7 +20,7 @@ logging:
 seoul-api:
   baseUrl: "http://openapi.seoul.go.kr:8088"
   key: "5a75446d6b6c656539375244465959"
-  dataType: "json"
+  resultType: "json"
   rent: "tbLnOpendataRentV"
   sale: "tbLnOpendataRtmsV"
 
