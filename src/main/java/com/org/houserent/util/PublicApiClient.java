@@ -1,8 +1,8 @@
 package com.org.houserent.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.org.houserent.domain.publicApi.PublicApiDataEntity;
-import com.org.houserent.domain.publicApi.PublicApiMainEntity;
+import com.org.houserent.util.publicApi.dto.PublicApiDataDto;
+import com.org.houserent.util.publicApi.dto.PublicApiMainDto;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -28,11 +28,11 @@ public class PublicApiClient {
                 );
 
         ObjectMapper mapper = new ObjectMapper();
-        PublicApiMainEntity publicApiMainEntity = mapper.readValue(str, PublicApiMainEntity.class);
+        PublicApiMainDto publicApiMainDto = mapper.readValue(str, PublicApiMainDto.class);
 
-        for (PublicApiDataEntity publicApiDataEntity : publicApiMainEntity.getTbLnOpendataRentV().getRow()) {
-            System.out.println(publicApiDataEntity.getACC_YEAR());
-            System.out.println(publicApiDataEntity.toString());
+        for (PublicApiDataDto publicApiDataDto : publicApiMainDto.getTbLnOpendataRentV().getRow()) {
+            System.out.println(publicApiDataDto.getACC_YEAR());
+            System.out.println(publicApiDataDto.toString());
         }
 
     }
