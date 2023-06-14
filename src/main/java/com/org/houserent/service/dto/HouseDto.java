@@ -1,5 +1,6 @@
 package com.org.houserent.service.dto;
 
+import com.org.houserent.domain.House;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -37,5 +38,22 @@ public class HouseDto {
         this.zipcode = zipcode;
         this.sgg_cd = sgg_cd;
         this.bjdong_cd = bjdong_cd;
+    }
+
+    public HouseDto(House house) {
+        this.id = house.getId();
+        this.city = house.getCity();
+        this.gu = house.getGu();
+        this.dong = house.getDong();
+        this.road_name = house.getRoad_name();
+        this.building_main_num = house.getBuilding_main_num();
+        this.building_sub_num = house.getBuilding_sub_num();
+        this.land_main_num = house.getLand_main_num();
+        this.land_sub_num = house.getLand_sub_num();
+        this.detail_address = house.getDetail_address();
+        this.zipcode = house.getZipcode();
+        this.sgg_cd = house.getSgg_cd();
+        this.bjdong_cd = house.getBjdong_cd();
+
     }
 }
