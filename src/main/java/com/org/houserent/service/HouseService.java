@@ -34,18 +34,18 @@ public class HouseService {
         houseRepository.saveHouse(house);
     }
 
-    public House findHouseByRoadAddress(String keyword) {
-        House findHouse = houseRepository.findHouseByRoadAddress(keyword);
+    public HouseDto findHouseByRoadAddress(String searchAddress) {
+        House findHouse = houseRepository.findHouseByRoadAddress(searchAddress);
         if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
 
-        return findHouse;
+        return new HouseDto(findHouse);
     }
 
-    public House findHouseByLandAddress(String keyword) {
-        House findHouse = houseRepository.findHouseByLandAddress(keyword);
+    public HouseDto findHouseByLandAddress(String searchAddress) {
+        House findHouse = houseRepository.findHouseByLandAddress(searchAddress);
         if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
 
-        return findHouse;
+        return new HouseDto(findHouse);
     }
 
 }

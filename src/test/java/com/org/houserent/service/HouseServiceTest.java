@@ -1,6 +1,7 @@
 package com.org.houserent.service;
 
 import com.org.houserent.domain.House;
+import com.org.houserent.service.dto.HouseDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ class HouseServiceTest {
     @Test
     public void 도로명_주소_검색() throws Exception {
         //given
-        String keyword = "올림픽로32길 42-23";
-        House findHouse = houseService.findHouseByRoadAddress(keyword);
+        String searchAddress = "올림픽로32길 42-23";
+        HouseDto findHouse = houseService.findHouseByRoadAddress(searchAddress);
         //when
 
         assertEquals("올림픽로32길", findHouse.getRoad_name());
@@ -30,8 +31,8 @@ class HouseServiceTest {
     @Test
     public void 지번_주소_검색() throws Exception {
         //given
-        String keyword = "방이동 100-23";
-        House findHouse = houseService.findHouseByLandAddress(keyword);
+        String searchAddress = "방이동 100-23";
+        HouseDto findHouse = houseService.findHouseByLandAddress(searchAddress);
 
         //when
         assertEquals("올림픽로32길", findHouse.getRoad_name());

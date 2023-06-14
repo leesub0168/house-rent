@@ -32,23 +32,23 @@ public class HouseRepository {
         return em.find(House.class, id);
     }
 
-    public House findHouseByRoadAddress(String keyword) {
+    public House findHouseByRoadAddress(String searchAddress) {
         try {
             return em.createQuery(
                             "select h from House h " +
-                                    "where concat(h.road_name,' ', h.building_main_num,'-', h.building_sub_num) like concat('%',:keyword, '%')", House.class)
-                    .setParameter("keyword", keyword)
+                                    "where concat(h.road_name,' ', h.building_main_num,'-', h.building_sub_num) like concat('%',:searchAddress, '%')", House.class)
+                    .setParameter("searchAddress", searchAddress)
                     .getSingleResult();
         } catch (NoResultException ne) {
             return null;
         }
     }
-    public House findHouseByLandAddress(String keyword) {
+    public House findHouseByLandAddress(String searchAddress) {
         try {
             return em.createQuery(
                             "select h from House h " +
-                                    "where concat(h.dong,' ', h.land_main_num,'-', h.land_sub_num) like concat('%',:keyword, '%')", House.class)
-                    .setParameter("keyword", keyword)
+                                    "where concat(h.dong,' ', h.land_main_num,'-', h.land_sub_num) like concat('%',:searchAddress, '%')", House.class)
+                    .setParameter("searchAddress", searchAddress)
                     .getSingleResult();
         } catch (NoResultException ne) {
             return null;
