@@ -5,5 +5,6 @@ import lombok.Getter;
 @Getter
 public class SearchRequestDto {
     private String userId;
-    private String keyword;
+    private String searchAddress;
+    private boolean isRoadAddress;
 }

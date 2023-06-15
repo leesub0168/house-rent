@@ -9,7 +9,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter @Setter
 @JsonNaming(PropertyNamingStrategies.UpperSnakeCaseStrategy.class)
-public class PublicApiSubDtoResultCode {
+public class CommonApiSubDtoResultCode {
 
     private String code;
     private String message;
