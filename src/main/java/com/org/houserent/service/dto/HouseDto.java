@@ -54,6 +54,22 @@ public class HouseDto {
         this.zipcode = house.getZipcode();
         this.sgg_cd = house.getSgg_cd();
         this.bjdong_cd = house.getBjdong_cd();
+    }
 
+    public House toEntity() {
+        return House.builder()
+                .sgg_cd(getSgg_cd())
+                .bjdong_cd(getBjdong_cd())
+                .zipcode(getZipcode())
+                .city(getCity())
+                .gu(getGu())
+                .dong(getDong())
+                .road_name(getRoad_name())
+                .building_main_num(getBuilding_main_num())
+                .building_sub_num(getBuilding_sub_num())
+                .land_main_num(getLand_main_num())
+                .land_sub_num(getLand_sub_num())
+                .detail_address(getDetail_address())
+                .build();
     }
 }
