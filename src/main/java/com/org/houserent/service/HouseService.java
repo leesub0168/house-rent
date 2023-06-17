@@ -15,7 +15,7 @@ public class HouseService {
     private final HouseRepository houseRepository;
 
     @Transactional
-    public void saveHouse(HouseDto houseDto) {
+    public Long saveHouse(HouseDto houseDto) {
         House house = House.builder()
                 .sgg_cd(houseDto.getSgg_cd())
                 .bjdong_cd(houseDto.getBjdong_cd())
@@ -32,6 +32,15 @@ public class HouseService {
                 .build();
 
         houseRepository.saveHouse(house);
+
+        return house.getId();
+    }
+
+    public HouseDto findHouseById(Long id) {
+        House findHouse = houseRepository.findHouseById(id);
+        if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
+
+        return new HouseDto(findHouse);
     }
 
     public HouseDto findHouseByRoadAddress(String searchAddress) {
