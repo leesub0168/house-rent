@@ -27,7 +27,8 @@ public class MemberService {
     public Long joinMember(MemberDto memberDto) {
         validateDuplicateUserId(memberDto.getUser_id());
         String encrypted_password = SHACryptoUtil.encrypt(memberDto.getPassword());
-        Member member = new Member(memberDto.getUser_id(), encrypted_password, memberDto.getName(), memberDto.getEmail(), LocalDateTime.now());
+        Member member = new Member(memberDto.getUser_id(), encrypted_password, memberDto.getName(),
+                memberDto.getEmail(), LocalDateTime.now());
         memberRepository.save(member);
         return member.getId();
     }
