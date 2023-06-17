@@ -25,7 +25,7 @@ public class HouseSaleContract {
     private String declare_type;    // 신고 구분
     private String declare_estate_agent_address; // 신고한 개업공인중개사 시군구명
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "house_id")
     private House house;
 

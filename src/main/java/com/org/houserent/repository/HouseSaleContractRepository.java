@@ -1,6 +1,5 @@
 package com.org.houserent.repository;
 
-import com.org.houserent.domain.House;
 import com.org.houserent.domain.HouseSaleContract;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -21,11 +20,11 @@ public class HouseSaleContractRepository {
         return em.find(HouseSaleContract.class, id);
     }
 
-    public List<HouseSaleContract> findHouseSaleContractByHouse(House house) {
+    public List<HouseSaleContract> findHouseSaleContractByHouse(Long houseId) {
         return em.createQuery(
-                        "select h from HouseSaleContract h " +
-                                "where h.house = :house", HouseSaleContract.class)
-                .setParameter("house", house)
+                        "select hs from HouseSaleContract hs join hs.house h " +
+                                "where h.id = :houseId", HouseSaleContract.class)
+                .setParameter("houseId", houseId)
                 .getResultList();
     }
 }
