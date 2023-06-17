@@ -3,16 +3,12 @@ package com.org.houserent.repository;
 import com.org.houserent.domain.House;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -40,7 +36,7 @@ class HouseRepositoryTest {
 
     @Test
     @Transactional
-    public void 집_저장_도로명_주소_조회() throws Exception {
+    public void 집_저장_도로명_주소_조회() {
         //given
         House house = makeHouse();
 
@@ -59,7 +55,7 @@ class HouseRepositoryTest {
 
     @Test
     @Transactional
-    public void 집_지번주소_조회() throws Exception {
+    public void 집_지번주소_조회() {
         //given
         House house = makeHouse();
         houseRepository.saveHouse(house);
