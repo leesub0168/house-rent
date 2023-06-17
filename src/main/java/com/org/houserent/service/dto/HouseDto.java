@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class HouseDto {
-    private Long id;
+    private Long house_id;
     private String city;
     private String gu;
     private String dong;
@@ -21,11 +21,11 @@ public class HouseDto {
     private String bjdong_cd;   // 법정동 코드
 
     @Builder
-    public HouseDto(Long id, String city, String gu, String dong, String road_name,
+    public HouseDto(Long house_id, String city, String gu, String dong, String road_name,
                     String building_main_num, String building_sub_num,
                     String land_main_num, String land_sub_num, String detail_address,
                     String zipcode, String sgg_cd, String bjdong_cd) {
-        this.id = id;
+        this.house_id = house_id;
         this.city = city;
         this.gu = gu;
         this.dong = dong;
@@ -41,7 +41,7 @@ public class HouseDto {
     }
 
     public HouseDto(House house) {
-        this.id = house.getId();
+        this.house_id = house.getId();
         this.city = house.getCity();
         this.gu = house.getGu();
         this.dong = house.getDong();
@@ -58,6 +58,7 @@ public class HouseDto {
 
     public House toEntity() {
         return House.builder()
+                .id(getHouse_id())
                 .sgg_cd(getSgg_cd())
                 .bjdong_cd(getBjdong_cd())
                 .zipcode(getZipcode())

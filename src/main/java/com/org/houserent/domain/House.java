@@ -52,11 +52,12 @@ public class House {
     }
 
     @Builder
-    public House(String building_year, String building_name, String building_usage,
+    public House(Long id, String building_year, String building_name, String building_usage,
                  String sgg_cd, String sgg_nm, String bjdong_cd, String bjdong_nm,
                  String building_main_num, String building_sub_num, String zipcode,
                  String land_main_num, String land_sub_num, String city, String gu,
                  String dong, String road_name, String detail_address) {
+        this.id = id;
         this.building_year = building_year;
         this.building_name = building_name;
         this.building_usage = building_usage;
