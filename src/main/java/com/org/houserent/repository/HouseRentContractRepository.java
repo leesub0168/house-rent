@@ -21,11 +21,11 @@ public class HouseRentContractRepository {
         return em.find(HouseRentContract.class, id);
     }
 
-    public List<HouseRentContract> findHouseRentContractByHouse(House house) {
+    public List<HouseRentContract> findHouseRentContractByHouse(Long houseId) {
         return em.createQuery(
-                        "select h from HouseRentContract h " +
-                                "where h.house = :house", HouseRentContract.class)
-                .setParameter("house", house)
+                        "select hr from HouseRentContract hr join hr.house h " +
+                                "where h.id = :houseId", HouseRentContract.class)
+                .setParameter("houseId", houseId)
                 .getResultList();
     }
 }
