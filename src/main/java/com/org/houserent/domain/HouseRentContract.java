@@ -35,9 +35,10 @@ public class HouseRentContract {
     }
 
     @Builder
-    public HouseRentContract(LocalDateTime rent_contract_date, LocalDateTime rent_contract_start_date,
+    public HouseRentContract(Long id, LocalDateTime rent_contract_date, LocalDateTime rent_contract_start_date,
                              LocalDateTime rent_contract_end_date, int deposit, int rent_fee, double rent_area,
                              double floor, String rent_type, House house) {
+        this.id = id;
         this.rent_contract_date = rent_contract_date;
         this.rent_contract_start_date = rent_contract_start_date;
         this.rent_contract_end_date = rent_contract_end_date;

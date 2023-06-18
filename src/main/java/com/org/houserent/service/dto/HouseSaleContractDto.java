@@ -1,6 +1,5 @@
 package com.org.houserent.service.dto;
 
-import com.org.houserent.domain.House;
 import com.org.houserent.domain.HouseSaleContract;
 import lombok.Builder;
 import lombok.Getter;
