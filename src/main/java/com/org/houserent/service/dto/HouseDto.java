@@ -3,8 +3,10 @@ package com.org.houserent.service.dto;
 import com.org.houserent.domain.House;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class HouseDto {
     private Long house_id;
     private String city;
@@ -18,13 +20,14 @@ public class HouseDto {
     private String detail_address;
     private String zipcode;
     private String sgg_cd;      // 자치구 코드
+    private String sgg_nm;      // 자치구 명
     private String bjdong_cd;   // 법정동 코드
 
     @Builder
     public HouseDto(Long house_id, String city, String gu, String dong, String road_name,
                     String building_main_num, String building_sub_num,
                     String land_main_num, String land_sub_num, String detail_address,
-                    String zipcode, String sgg_cd, String bjdong_cd) {
+                    String zipcode, String sgg_cd, String sgg_nm, String bjdong_cd) {
         this.house_id = house_id;
         this.city = city;
         this.gu = gu;
@@ -37,6 +40,7 @@ public class HouseDto {
         this.detail_address = detail_address;
         this.zipcode = zipcode;
         this.sgg_cd = sgg_cd;
+        this.sgg_nm = sgg_nm;
         this.bjdong_cd = bjdong_cd;
     }
 
@@ -53,6 +57,7 @@ public class HouseDto {
         this.detail_address = house.getDetail_address();
         this.zipcode = house.getZipcode();
         this.sgg_cd = house.getSgg_cd();
+        this.sgg_nm = house.getSgg_nm();
         this.bjdong_cd = house.getBjdong_cd();
     }
 
@@ -60,6 +65,7 @@ public class HouseDto {
         return House.builder()
                 .id(getHouse_id())
                 .sgg_cd(getSgg_cd())
+                .sgg_nm(getSgg_nm())
                 .bjdong_cd(getBjdong_cd())
                 .zipcode(getZipcode())
                 .city(getCity())
