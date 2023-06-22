@@ -111,7 +111,7 @@ class HouseSaleContractServiceTest {
         houseSaleContractService.saveHouseSaleContract(houseSaleContractDto);
         
         //when
-        List<HouseSaleContractDto> houseSaleContractByHouse = houseSaleContractService.findHouseSaleContractByHouse(houseSaleContractDto);
+        List<HouseSaleContractDto> houseSaleContractByHouse = houseSaleContractService.findHouseSaleContractByHouse(houseSaleContractDto.getHouseDto());
 
         //then
         assertNotNull(houseSaleContractByHouse);
