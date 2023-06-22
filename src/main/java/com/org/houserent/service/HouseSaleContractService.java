@@ -2,6 +2,7 @@ package com.org.houserent.service;
 
 import com.org.houserent.domain.HouseSaleContract;
 import com.org.houserent.repository.HouseSaleContractRepository;
+import com.org.houserent.service.dto.HouseDto;
 import com.org.houserent.service.dto.HouseSaleContractDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,8 @@ public class HouseSaleContractService {
         return new HouseSaleContractDto(findHouseSaleContract);
     }
 
-    public List<HouseSaleContractDto> findHouseSaleContractByHouse(HouseSaleContractDto houseSaleContractDto) {
-        List<HouseSaleContract> houseSaleContractList = houseSaleContractRepository.findHouseSaleContractByHouse(houseSaleContractDto.getHouseDto().toEntity().getId());
+    public List<HouseSaleContractDto> findHouseSaleContractByHouse(HouseDto houseDto) {
+        List<HouseSaleContract> houseSaleContractList = houseSaleContractRepository.findHouseSaleContractByHouse(houseDto.getHouse_id());
         List<HouseSaleContractDto> houseSaleContractDtoList = new ArrayList<>();
         for (HouseSaleContract houseSaleContract : houseSaleContractList) {
             houseSaleContractDtoList.add(new HouseSaleContractDto(houseSaleContract));
