@@ -2,6 +2,7 @@ package com.org.houserent.service;
 
 import com.org.houserent.domain.HouseRentContract;
 import com.org.houserent.repository.HouseRentContractRepository;
+import com.org.houserent.service.dto.HouseDto;
 import com.org.houserent.service.dto.HouseRentContractDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,9 @@ public class HouseRentContractService {
         return new HouseRentContractDto(houseRentContract);
     }
 
-    public List<HouseRentContractDto> findHouseRentContractByHouse(HouseRentContractDto houseRentContractDto) {
+    public List<HouseRentContractDto> findHouseRentContractByHouse(HouseDto houseDto) {
         List<HouseRentContract> houseRentContractByHouse =
-                houseRentContractRepository.findHouseRentContractByHouse(houseRentContractDto.getHouseDto().getHouse_id());
+                houseRentContractRepository.findHouseRentContractByHouse(houseDto.getHouse_id());
         List<HouseRentContractDto> result = new ArrayList<>();
         for (HouseRentContract houseRentContract : houseRentContractByHouse) {
             result.add(new HouseRentContractDto(houseRentContract));
