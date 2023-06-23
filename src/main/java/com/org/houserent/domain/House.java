@@ -27,8 +27,8 @@ public class House {
     private String building_main_num; // 도로명 - 건물 본번
     private String building_sub_num; // 도로명 - 건물 부번
 
-    private String land_main_num;   // 지번 주소 - 본번
-    private String land_sub_num;    // 지번 주소 - 부번
+    private int land_main_num;   // 지번 주소 - 본번
+    private int land_sub_num;    // 지번 주소 - 부번
 
     private String zipcode;
 
@@ -55,7 +55,7 @@ public class House {
     public House(Long id, String building_year, String building_name, String building_usage,
                  String sgg_cd, String sgg_nm, String bjdong_cd, String bjdong_nm,
                  String building_main_num, String building_sub_num, String zipcode,
-                 String land_main_num, String land_sub_num, String city, String gu,
+                 int land_main_num, int land_sub_num, String city, String gu,
                  String dong, String road_name, String detail_address) {
         this.id = id;
         this.building_year = building_year;

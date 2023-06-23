@@ -25,9 +25,9 @@ public class JusoApiDataDto {
     private String bdNm;        // 건물명
     private String admCd;       // 행정구역 코드 -> 시군구 코드(5자리) + 법정동 코드(5자리)
     private String udrtYn;      // 지하여부 (0:지상, 1:지하)
-    private String lnbrMnnm;    // 지번-본번
+    private int lnbrMnnm;    // 지번-본번
     private String roadAddr;    // 전체 도로명 주소
-    private String lnbrSlno;    // 지번-부번 (부번이 없는 경우 0)
+    private int lnbrSlno;    // 지번-부번 (부번이 없는 경우 0)
     private String buldMnnm;    // 건물 번호 - 본번
     private String bdKdcd;      // 공동 주택여부 (1:공동주택, 0: 비공동주택)
     private String liNm;        // 법정리명

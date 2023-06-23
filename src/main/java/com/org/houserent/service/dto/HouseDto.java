@@ -15,8 +15,8 @@ public class HouseDto {
     private String road_name;
     private String building_main_num;
     private String building_sub_num;
-    private String land_main_num;
-    private String land_sub_num;
+    private int land_main_num;
+    private int land_sub_num;
     private String detail_address;
     private String zipcode;
     private String sgg_cd;      // 자치구 코드
@@ -26,7 +26,7 @@ public class HouseDto {
     @Builder
     public HouseDto(Long house_id, String city, String gu, String dong, String road_name,
                     String building_main_num, String building_sub_num,
-                    String land_main_num, String land_sub_num, String detail_address,
+                    int land_main_num, int land_sub_num, String detail_address,
                     String zipcode, String sgg_cd, String sgg_nm, String bjdong_cd) {
         this.house_id = house_id;
         this.city = city;
