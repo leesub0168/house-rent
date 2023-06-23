@@ -18,6 +18,7 @@ public class HouseService {
     public Long saveHouse(HouseDto houseDto) {
         House house = House.builder()
                 .sgg_cd(houseDto.getSgg_cd())
+                .sgg_nm(houseDto.getSgg_nm())
                 .bjdong_cd(houseDto.getBjdong_cd())
                 .zipcode(houseDto.getZipcode())
                 .city(houseDto.getCity())
