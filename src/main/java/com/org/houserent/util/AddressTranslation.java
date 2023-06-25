@@ -2,6 +2,7 @@ package com.org.houserent.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.org.houserent.exception.NonExistHouseException;
 import com.org.houserent.service.HouseService;
 import com.org.houserent.service.dto.HouseDto;
 import com.org.houserent.util.jusoApi.dto.JusoApiDataDto;
@@ -36,15 +37,21 @@ public class AddressTranslation {
     private int currentPage = 1;
     private int countPerPage = 10;
 
-    public void getAddressInfo(String searchAddress) throws JsonProcessingException {
+    public HouseDto getAddressInfo(String searchAddress) {
+
         URI uri = makeUri(searchAddress);
 
         String str = callApiAcceptJson(uri);
+        try {
+            JusoApiMainDto jusoApiMainDto = jsonStringToObject(str, JusoApiMainDto.class);
+            List<JusoApiDataDto> jusoApiDataDtoList = jusoApiMainDto.getResults().getJuso();
+            JusoApiDataDto jusoApiDataDto = jusoApiDataDtoList.get(0);
 
-        JusoApiMainDto jusoApiMainDto = jsonStringToObject(str, JusoApiMainDto.class);
-        List<JusoApiDataDto> jusoApiDataDtoList = jusoApiMainDto.getResults().getJuso();
-
-        saveAddressInfo(jusoApiDataDtoList);
+            return jusoApiDataDto.toHouseDto();
+        } catch (JsonProcessingException jpe) {
+            jpe.printStackTrace();
+        }
+        throw new NonExistHouseException("주소 정보를 찾을수 없습니다.");
     }
 
     public void saveAddressInfo(List<JusoApiDataDto> jusoApiDataDtoList) {
