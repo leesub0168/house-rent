@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -44,18 +46,17 @@ public class HouseService {
         return new HouseDto(findHouse);
     }
 
-    public HouseDto findHouseByRoadAddress(String searchAddress) {
+    public Optional<HouseDto> findHouseByRoadAddress(String searchAddress) {
         House findHouse = houseRepository.findHouseByRoadAddress(searchAddress);
-        if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
-
-        return new HouseDto(findHouse);
+//        if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
+        return Optional.ofNullable(new HouseDto(findHouse));
     }
 
-    public HouseDto findHouseByLandAddress(String searchAddress) {
+    public Optional<HouseDto> findHouseByLandAddress(String searchAddress) {
         House findHouse = houseRepository.findHouseByLandAddress(searchAddress);
-        if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
+//        if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
 
-        return new HouseDto(findHouse);
+        return Optional.ofNullable(new HouseDto(findHouse));
     }
 
 }

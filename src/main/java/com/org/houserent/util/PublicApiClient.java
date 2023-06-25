@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @Getter
@@ -56,11 +57,11 @@ public class PublicApiClient {
      *      /접수연도/자치구코드/자치구명/법정동코드/지번구분/지번구분명/본번/부번/건물명/계약일/건물용도
      * */
     public List<HouseSaleContractDto> getHouseSaleContractInfo(String searchAddress, boolean isRoadAddress) {
-        HouseDto houseDto;
+        Optional<HouseDto> houseDto;
         if(isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
         else houseDto = houseService.findHouseByLandAddress(searchAddress);
 
-        URI uri = makeUri(sale, houseDto);
+        URI uri = makeUri(sale, houseDto.get());
         System.out.println(uri);
         String str = callApiAcceptJson(uri);
 
@@ -69,8 +70,8 @@ public class PublicApiClient {
             HouseSaleApiMainDto houseSaleApiMainDto = jsonStringToObject(str, HouseSaleApiMainDto.class);
             for (HouseSaleApiDataDto houseSaleApiDataDto : houseSaleApiMainDto.getTbLnOpendataRtmsV().getRow()) {
 
-                if (checkHouseInfo(houseDto, houseSaleApiDataDto))
-                    houseSaleContractDtoList.add(houseSaleApiDataDto.toHouseSaleContractDto(houseDto));
+                if (checkHouseInfo(houseDto.get(), houseSaleApiDataDto))
+                    houseSaleContractDtoList.add(houseSaleApiDataDto.toHouseSaleContractDto(houseDto.get()));
             }
         } catch (JsonProcessingException jpe) {
             jpe.printStackTrace();
@@ -84,12 +85,12 @@ public class PublicApiClient {
      *      /접수연도/자치구코드/자치구명/법정동코드/지번구분/본번/부번/계약일/건물명/건물용도
      * */
     public void getHouseRentContractInfo(String searchAddress, boolean isRoadAddress) throws JsonProcessingException {
-        HouseDto houseDto;
+        Optional<HouseDto> houseDto;
         if (isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
         else houseDto = houseService.findHouseByLandAddress(searchAddress);
 
 
-        URI uri = makeUri(rent, houseDto);
+        URI uri = makeUri(rent, houseDto.get());
 
         String str = callApiAcceptJson(uri);
 
