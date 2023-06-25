@@ -1,40 +1,144 @@
 package com.org.houserent.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.org.houserent.util.publicApi.dto.PublicApiDataDto;
-import com.org.houserent.util.publicApi.dto.PublicApiMainDto;
+import com.org.houserent.domain.House;
+import com.org.houserent.service.HouseService;
+import com.org.houserent.service.dto.HouseDto;
+import com.org.houserent.service.dto.HouseSaleContractDto;
+import com.org.houserent.util.publicApi.dto.HouseRentApiDataDto;
+import com.org.houserent.util.publicApi.dto.HouseRentApiMainDto;
+import com.org.houserent.util.publicApi.dto.HouseSaleApiDataDto;
+import com.org.houserent.util.publicApi.dto.HouseSaleApiMainDto;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
+@Component
+@Getter
+@RequiredArgsConstructor
 public class PublicApiClient {
-    private String publicApiUrl = "http://openapi.seoul.go.kr:8088";
-    private String key = "5a75446d6b6c656539375244465959";
-    private String etc = "/xml/tbLnOpendataRentV/1/5/";
     private String testUrl = "http://openapi.seoul.go.kr:8088/5a75446d6b6c656539375244465959/json/tbLnOpendataRentV/1/5/2022/11620";
 
+    @Value("${seoul-api.baseUrl}")
+    private String baseUrl;
 
-    public void testCallApi() throws IOException {
+    @Value("${seoul-api.key}")
+    private String key;
+
+    @Value("${seoul-api.resultType}")
+    private String resultType;
+
+    @Value("${seoul-api.rent}")
+    private String rent;
+
+    @Value("${seoul-api.sale}")
+    private String sale;
+
+    private int start_index = 1;
+    private int end_index = 10;
+
+    private final HouseService houseService;
+
+    /**
+     * 서울시 부동산 실거래가 정보 API
+     * http://openapi.seoul.go.kr:8088/인증키/요청파일_타입/서비스명/요청시작위치/요청종료위치 +
+     *      /접수연도/자치구코드/자치구명/법정동코드/지번구분/지번구분명/본번/부번/건물명/계약일/건물용도
+     * */
+    public List<HouseSaleContractDto> getHouseSaleContractInfo(String searchAddress, boolean isRoadAddress) {
+        HouseDto houseDto;
+        if(isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
+        else houseDto = houseService.findHouseByLandAddress(searchAddress);
+
+        URI uri = makeUri(sale, houseDto);
+        System.out.println(uri);
+        String str = callApiAcceptJson(uri);
+
+        List<HouseSaleContractDto> houseSaleContractDtoList = new ArrayList<>();
+        try {
+            HouseSaleApiMainDto houseSaleApiMainDto = jsonStringToObject(str, HouseSaleApiMainDto.class);
+            for (HouseSaleApiDataDto houseSaleApiDataDto : houseSaleApiMainDto.getTbLnOpendataRtmsV().getRow()) {
+
+                if (checkHouseInfo(houseDto, houseSaleApiDataDto))
+                    houseSaleContractDtoList.add(houseSaleApiDataDto.toHouseSaleContractDto(houseDto));
+            }
+        } catch (JsonProcessingException jpe) {
+            jpe.printStackTrace();
+        }
+        return houseSaleContractDtoList;
+    }
+
+    /**
+     * 서울시 부동산 전월세가 정보 API
+     * http://openapi.seoul.go.kr:8088/인증키/요청파일_타입/서비스명/요청시작위치/요청종료위치 +
+     *      /접수연도/자치구코드/자치구명/법정동코드/지번구분/본번/부번/계약일/건물명/건물용도
+     * */
+    public void getHouseRentContractInfo(String searchAddress, boolean isRoadAddress) throws JsonProcessingException {
+        HouseDto houseDto;
+        if (isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
+        else houseDto = houseService.findHouseByLandAddress(searchAddress);
+
+
+        URI uri = makeUri(rent, houseDto);
+
+        String str = callApiAcceptJson(uri);
+
+        HouseRentApiMainDto houseRentApiMainDto = jsonStringToObject(str, HouseRentApiMainDto.class);
+
+        for (HouseRentApiDataDto houseRentApiDataDto : houseRentApiMainDto.getTbLnOpendataRentV().getRow()) {
+            System.out.println(houseRentApiDataDto);
+        }
+    }
+
+    public boolean checkHouseInfo(HouseDto houseDto, HouseSaleApiDataDto houseSaleApiDataDto) {
+        return Objects.equals(houseDto.getBjdong_cd(), houseSaleApiDataDto.getBJDONG_CD())
+                && Objects.equals(houseDto.getSgg_cd(), houseSaleApiDataDto.getSGG_CD())
+                && Objects.equals(houseDto.getLand_main_num(), houseSaleApiDataDto.getBONBEON())
+                && Objects.equals(houseDto.getLand_sub_num(), houseSaleApiDataDto.getBUBEON())
+                && Objects.equals(houseDto.getDetail_address(), houseSaleApiDataDto.getBLDG_NM());
+    }
+
+    private String getCurrentYear() {
+        return String.valueOf(LocalDateTime.now().getYear());
+    }
+    
+    private URI makeUri(String serviceType, HouseDto houseDto) {
+        return UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .pathSegment(key, resultType, serviceType,
+                        String.valueOf(start_index), String.valueOf(end_index),
+                        getCurrentYear(), houseDto.getSgg_cd(), houseDto.getSgg_nm(),
+                        houseDto.getBjdong_cd(),"{land_gbn}", "{land_gbn_nm}",
+                        String.format("%04d", houseDto.getLand_main_num()),
+                        String.format("%04d", houseDto.getLand_sub_num())
+//                        ,"{contract_date}", houseDto.getDetail_address()
+                )
+                .build(" "," ", " ");
+    }
+
+    private <T> T jsonStringToObject(String str, Class<T> objectType) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(str, objectType);
+    }
+
+    public String callApiAcceptJson(URI uri) {
         WebClient webClient = WebClient.create();
-        String str = webClient.get().uri(URI.create(testUrl))
+        return webClient.get().uri(uri)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
-//                .timeout(Duration.ofMillis(10000))
                 .blockOptional().orElseThrow(
                         () -> new IllegalArgumentException("공공 api 호출 실패")
                 );
-
-        ObjectMapper mapper = new ObjectMapper();
-        PublicApiMainDto publicApiMainDto = mapper.readValue(str, PublicApiMainDto.class);
-
-        for (PublicApiDataDto publicApiDataDto : publicApiMainDto.getTbLnOpendataRentV().getRow()) {
-            System.out.println(publicApiDataDto.getACC_YEAR());
-            System.out.println(publicApiDataDto.toString());
-        }
-
     }
 
 }
