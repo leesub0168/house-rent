@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @Getter
@@ -45,8 +46,8 @@ public class PublicApiClient {
     @Value("${seoul-api.sale}")
     private String sale;
 
-    private int start_index = 1;
-    private int end_index = 10;
+    private String start_index = "1";
+    private String end_index = "10";
 
     private final HouseService houseService;
 
@@ -56,12 +57,18 @@ public class PublicApiClient {
      *      /접수연도/자치구코드/자치구명/법정동코드/지번구분/지번구분명/본번/부번/건물명/계약일/건물용도
      * */
     public List<HouseSaleContractDto> getHouseSaleContractInfo(String searchAddress, boolean isRoadAddress) {
-        HouseDto houseDto;
+        Optional<HouseDto> houseDto;
         if(isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
         else houseDto = houseService.findHouseByLandAddress(searchAddress);
 
-        URI uri = makeUri(sale, houseDto);
-        System.out.println(uri);
+        URI uri = makeUri(
+                key, resultType, sale,
+                start_index, end_index,
+                getCurrentYear(), houseDto.get().getSgg_cd(),
+                houseDto.get().getSgg_nm(), houseDto.get().getBjdong_cd(),
+                "{land_gbn}", "{land_gbn_nm}", String.format("%04d", houseDto.get().getLand_main_num()),
+                String.format("%04d", houseDto.get().getLand_sub_num())
+        );
         String str = callApiAcceptJson(uri);
 
         List<HouseSaleContractDto> houseSaleContractDtoList = new ArrayList<>();
@@ -69,8 +76,8 @@ public class PublicApiClient {
             HouseSaleApiMainDto houseSaleApiMainDto = jsonStringToObject(str, HouseSaleApiMainDto.class);
             for (HouseSaleApiDataDto houseSaleApiDataDto : houseSaleApiMainDto.getTbLnOpendataRtmsV().getRow()) {
 
-                if (checkHouseInfo(houseDto, houseSaleApiDataDto))
-                    houseSaleContractDtoList.add(houseSaleApiDataDto.toHouseSaleContractDto(houseDto));
+                if (checkHouseInfo(houseDto.get(), houseSaleApiDataDto))
+                    houseSaleContractDtoList.add(houseSaleApiDataDto.toHouseSaleContractDto(houseDto.get()));
             }
         } catch (JsonProcessingException jpe) {
             jpe.printStackTrace();
@@ -84,13 +91,19 @@ public class PublicApiClient {
      *      /접수연도/자치구코드/자치구명/법정동코드/지번구분/본번/부번/계약일/건물명/건물용도
      * */
     public void getHouseRentContractInfo(String searchAddress, boolean isRoadAddress) throws JsonProcessingException {
-        HouseDto houseDto;
+        Optional<HouseDto> houseDto;
         if (isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
         else houseDto = houseService.findHouseByLandAddress(searchAddress);
 
 
-        URI uri = makeUri(rent, houseDto);
-
+        URI uri = makeUri(
+                key, resultType, rent,
+                start_index, end_index,
+                getCurrentYear(), houseDto.get().getSgg_cd(),
+                houseDto.get().getSgg_nm(), houseDto.get().getBjdong_cd(),
+                "{land_gbn}", String.format("%04d", houseDto.get().getLand_main_num()),
+                String.format("%04d", houseDto.get().getLand_sub_num())
+        );
         String str = callApiAcceptJson(uri);
 
         HouseRentApiMainDto houseRentApiMainDto = jsonStringToObject(str, HouseRentApiMainDto.class);
@@ -112,16 +125,9 @@ public class PublicApiClient {
         return String.valueOf(LocalDateTime.now().getYear());
     }
     
-    private URI makeUri(String serviceType, HouseDto houseDto) {
+    private URI makeUri(String... strings) {
         return UriComponentsBuilder.fromHttpUrl(baseUrl)
-                .pathSegment(key, resultType, serviceType,
-                        String.valueOf(start_index), String.valueOf(end_index),
-                        getCurrentYear(), houseDto.getSgg_cd(), houseDto.getSgg_nm(),
-                        houseDto.getBjdong_cd(),"{land_gbn}", "{land_gbn_nm}",
-                        String.format("%04d", houseDto.getLand_main_num()),
-                        String.format("%04d", houseDto.getLand_sub_num())
-//                        ,"{contract_date}", houseDto.getDetail_address()
-                )
+                .pathSegment(strings)
                 .build(" "," ", " ");
     }
 

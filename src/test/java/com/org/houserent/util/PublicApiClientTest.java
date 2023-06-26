@@ -44,6 +44,23 @@ class PublicApiClientTest {
                 .zipcode("07625")
                 .build();
     }
+    public House makeHouse2() {
+        return House.builder()
+                .bjdong_cd("11100")
+                .building_main_num("11")
+                .building_sub_num("0")
+                .city("서울특별시")
+                .detail_address("")
+                .dong("방이동")
+                .gu("송파구")
+                .land_main_num(48)
+                .land_sub_num(2)
+                .road_name("위례성대로2길")
+                .sgg_cd("11710")
+                .sgg_nm("송파구")
+                .zipcode("05545")
+                .build();
+    }
 
     @Test
     @Transactional
@@ -66,8 +83,11 @@ class PublicApiClientTest {
     @Test
     public void 부동산_전월세_실거래가_조회() throws Exception {
         //given
-        String searchAddress = "방이동 100-23";
+        String searchAddress = "방이동 48-2";
         boolean isRoadAddress = false;
+        House house = makeHouse2();
+        houseService.saveHouse(new HouseDto(house));
+
         //when
         publicApiClient.getHouseRentContractInfo(searchAddress, isRoadAddress);
         //then

@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class AddressTranslation {
     private int currentPage = 1;
     private int countPerPage = 10;
 
-    public HouseDto getAddressInfo(String searchAddress) {
+    public Optional<HouseDto> getAddressInfo(String searchAddress) {
 
         URI uri = makeUri(searchAddress);
 
@@ -47,7 +48,7 @@ public class AddressTranslation {
             List<JusoApiDataDto> jusoApiDataDtoList = jusoApiMainDto.getResults().getJuso();
             JusoApiDataDto jusoApiDataDto = jusoApiDataDtoList.get(0);
 
-            return jusoApiDataDto.toHouseDto();
+            return Optional.ofNullable(jusoApiDataDto.toHouseDto());
         } catch (JsonProcessingException jpe) {
             jpe.printStackTrace();
         }
