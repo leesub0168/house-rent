@@ -46,8 +46,8 @@ public class PublicApiClient {
     @Value("${seoul-api.sale}")
     private String sale;
 
-    private int start_index = 1;
-    private int end_index = 10;
+    private String start_index = "1";
+    private String end_index = "10";
 
     private final HouseService houseService;
 
@@ -61,8 +61,14 @@ public class PublicApiClient {
         if(isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
         else houseDto = houseService.findHouseByLandAddress(searchAddress);
 
-        URI uri = makeUri(sale, houseDto.get());
-        System.out.println(uri);
+        URI uri = makeUri(
+                key, resultType, sale,
+                start_index, end_index,
+                getCurrentYear(), houseDto.get().getSgg_cd(),
+                houseDto.get().getSgg_nm(), houseDto.get().getBjdong_cd(),
+                "{land_gbn}", "{land_gbn_nm}", String.format("%04d", houseDto.get().getLand_main_num()),
+                String.format("%04d", houseDto.get().getLand_sub_num())
+        );
         String str = callApiAcceptJson(uri);
 
         List<HouseSaleContractDto> houseSaleContractDtoList = new ArrayList<>();
@@ -90,8 +96,14 @@ public class PublicApiClient {
         else houseDto = houseService.findHouseByLandAddress(searchAddress);
 
 
-        URI uri = makeUri(rent, houseDto.get());
-
+        URI uri = makeUri(
+                key, resultType, rent,
+                start_index, end_index,
+                getCurrentYear(), houseDto.get().getSgg_cd(),
+                houseDto.get().getSgg_nm(), houseDto.get().getBjdong_cd(),
+                "{land_gbn}", String.format("%04d", houseDto.get().getLand_main_num()),
+                String.format("%04d", houseDto.get().getLand_sub_num())
+        );
         String str = callApiAcceptJson(uri);
 
         HouseRentApiMainDto houseRentApiMainDto = jsonStringToObject(str, HouseRentApiMainDto.class);
@@ -113,16 +125,9 @@ public class PublicApiClient {
         return String.valueOf(LocalDateTime.now().getYear());
     }
     
-    private URI makeUri(String serviceType, HouseDto houseDto) {
+    private URI makeUri(String... strings) {
         return UriComponentsBuilder.fromHttpUrl(baseUrl)
-                .pathSegment(key, resultType, serviceType,
-                        String.valueOf(start_index), String.valueOf(end_index),
-                        getCurrentYear(), houseDto.getSgg_cd(), houseDto.getSgg_nm(),
-                        houseDto.getBjdong_cd(),"{land_gbn}", "{land_gbn_nm}",
-                        String.format("%04d", houseDto.getLand_main_num()),
-                        String.format("%04d", houseDto.getLand_sub_num())
-//                        ,"{contract_date}", houseDto.getDetail_address()
-                )
+                .pathSegment(strings)
                 .build(" "," ", " ");
     }
 
