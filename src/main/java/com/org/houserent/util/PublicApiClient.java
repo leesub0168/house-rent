@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @Getter
@@ -74,11 +75,12 @@ public class PublicApiClient {
         List<HouseSaleContractDto> houseSaleContractDtoList = new ArrayList<>();
         try {
             HouseSaleApiMainDto houseSaleApiMainDto = jsonStringToObject(str, HouseSaleApiMainDto.class);
-            for (HouseSaleApiDataDto houseSaleApiDataDto : houseSaleApiMainDto.getTbLnOpendataRtmsV().getRow()) {
+            houseSaleContractDtoList = houseSaleApiMainDto.getTbLnOpendataRtmsV().getRow()
+                    .stream()
+                    .filter(o -> checkHouseInfo(houseDto.get(), o))
+                    .map(o -> o.toHouseSaleContractDto(houseDto.get()))
+                    .collect(Collectors.toList());
 
-                if (checkHouseInfo(houseDto.get(), houseSaleApiDataDto))
-                    houseSaleContractDtoList.add(houseSaleApiDataDto.toHouseSaleContractDto(houseDto.get()));
-            }
         } catch (JsonProcessingException jpe) {
             jpe.printStackTrace();
         }
@@ -116,8 +118,8 @@ public class PublicApiClient {
     public boolean checkHouseInfo(HouseDto houseDto, HouseSaleApiDataDto houseSaleApiDataDto) {
         return Objects.equals(houseDto.getBjdong_cd(), houseSaleApiDataDto.getBJDONG_CD())
                 && Objects.equals(houseDto.getSgg_cd(), houseSaleApiDataDto.getSGG_CD())
-                && Objects.equals(houseDto.getLand_main_num(), houseSaleApiDataDto.getBONBEON())
-                && Objects.equals(houseDto.getLand_sub_num(), houseSaleApiDataDto.getBUBEON())
+                && Objects.equals(String.format("%04d", houseDto.getLand_main_num()), houseSaleApiDataDto.getBONBEON())
+                && Objects.equals(String.format("%04d", houseDto.getLand_sub_num()), houseSaleApiDataDto.getBUBEON())
                 && Objects.equals(houseDto.getDetail_address(), houseSaleApiDataDto.getBLDG_NM());
     }
 
