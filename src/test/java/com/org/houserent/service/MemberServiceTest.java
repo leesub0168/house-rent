@@ -112,7 +112,7 @@ class MemberServiceTest {
         memberService.joinMember(memberDTO);
 
         //when
-        Long id = Long.valueOf("1234");
+        Long id = 1234L;
 
         //then
         assertThrows(NonExistMemberException.class, () -> memberService.findMemberById(id));
