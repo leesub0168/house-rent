@@ -27,7 +27,7 @@ public class MemberRepositoryOld {
             return em.createQuery(
                             "select m from Member m" +
                                     " where m.userId = :userId" +
-                                    "   and m.withdraw_date is null", Member.class)
+                                    "   and m.withdrawDate is null", Member.class)
                     .setParameter("userId", userId)
                     .getSingleResult();
         } catch (NoResultException ne) {
@@ -41,7 +41,7 @@ public class MemberRepositoryOld {
                             "select m from Member m" +
                                     " where m.userId = :userId" +
                                     "   and m.password = :password" +
-                                    "   and m.withdraw_date is null ", Member.class)
+                                    "   and m.withdrawDate is null ", Member.class)
                     .setParameter("userId", userId)
                     .setParameter("password", password)
                     .getSingleResult();
@@ -55,7 +55,7 @@ public class MemberRepositoryOld {
                         "select m from Member m" +
                                 " where m.name = :name" +
                                 "   and m.email = :email" +
-                                "   and m.withdraw_date is null ", Member.class)
+                                "   and m.withdrawDate is null ", Member.class)
                 .setParameter("name", name)
                 .setParameter("email", email)
                 .getResultList();
@@ -63,7 +63,7 @@ public class MemberRepositoryOld {
 
     public List<Member> findAll() {
         return em.createQuery("select m from Member m " +
-                        "where m.withdraw_date is null ", Member.class)
+                        "where m.withdrawDate is null ", Member.class)
                 .getResultList();
     }
 
