@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 class MemberServiceTest {
 
     @Autowired
@@ -35,7 +36,6 @@ class MemberServiceTest {
     }
 
     @Test
-    @Transactional
     public void 회원가입_성공() throws Exception {
         //given
         MemberDto memberDTO = createMemberDTO();
@@ -49,7 +49,6 @@ class MemberServiceTest {
     }
     
     @Test
-    @Transactional
     public void 회원가입_실패_중복아이디() throws Exception {
         //given
         MemberDto memberDto1 = createMemberDTO();
@@ -63,7 +62,6 @@ class MemberServiceTest {
     }
     
     @Test
-    @Transactional
     public void 로그인_성공() throws Exception {
         //given
         MemberDto memberDTO = createMemberDTO();
@@ -78,7 +76,6 @@ class MemberServiceTest {
     }
     
     @Test
-    @Transactional
     public void 로그인_실패_비밀번호_불일치() throws Exception {
         //given
         MemberDto memberDTO = createMemberDTO();
@@ -91,7 +88,6 @@ class MemberServiceTest {
     }
     
     @Test
-    @Transactional
     public void 회원_탈퇴() throws Exception {
         //given
         MemberDto memberDTO = createMemberDTO();
@@ -105,7 +101,6 @@ class MemberServiceTest {
     }
 
     @Test
-    @Transactional
     public void id로_회원조회() throws Exception {
         //given
         MemberDto memberDTO = createMemberDTO();
@@ -119,7 +114,6 @@ class MemberServiceTest {
     }
 
     @Test
-    @Transactional
     public void 비밀번호_변경전_패스워드_검증() throws Exception {
         //given
         MemberDto memberDTO = createMemberDTO();
@@ -134,7 +128,6 @@ class MemberServiceTest {
     }
 
     @Test
-    @Transactional
     public void 회원정보_수정() throws Exception {
         //given
         MemberDto memberDTO = createMemberDTO();
@@ -162,7 +155,6 @@ class MemberServiceTest {
     }
     
     @Test
-    @Transactional
     public void 비밀번호_변경() throws Exception {
         //given
         MemberDto memberDTO = createMemberDTO();
