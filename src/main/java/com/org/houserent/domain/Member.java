@@ -20,21 +20,21 @@ public class Member {
     private String password;
     private String name;
     private String email;
-    private LocalDateTime join_date;
-    private LocalDateTime withdraw_date;
+    private LocalDateTime joinDate;
+    private LocalDateTime withdrawDate;
 
     public Member() {}
 
-    public Member(String userId, String password, String name, String email, LocalDateTime join_date) {
+    public Member(String userId, String password, String name, String email, LocalDateTime joinDate) {
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
-        this.join_date = join_date;
+        this.joinDate = joinDate;
     }
 
     public void withDrawMember() {
-        this.withdraw_date = LocalDateTime.now();
+        this.withdrawDate = LocalDateTime.now();
     }
 
     public void updateMemberInfo(String name, String email) {
