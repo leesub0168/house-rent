@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 class HouseRepositoryTest {
 
     @Autowired
@@ -37,7 +38,6 @@ class HouseRepositoryTest {
     }
 
     @Test
-    @Transactional
     public void 집_저장_도로명_주소_조회() {
         //given
         House house = makeHouse();
@@ -56,7 +56,6 @@ class HouseRepositoryTest {
     }
 
     @Test
-    @Transactional
     public void 집_지번주소_조회() {
         //given
         House house = makeHouse();
