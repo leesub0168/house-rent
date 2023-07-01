@@ -1,8 +1,9 @@
 package com.org.houserent.util;
 
 import com.org.houserent.domain.House;
-import com.org.houserent.service.HouseService;
-import com.org.houserent.service.dto.HouseDto;
+import com.org.houserent.exception.NonExistDataException;
+import com.org.houserent.repository.HouseRepository;
+import com.org.houserent.service.dto.HouseRentContractDto;
 import com.org.houserent.service.dto.HouseSaleContractDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,22 +11,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 class PublicApiClientTest {
 
     @Autowired
     PublicApiClient publicApiClient;
 
     @Autowired
-    HouseService houseService;
+    HouseRepository houseRepository;
 
     public House makeHouse() {
         return House.builder()
@@ -63,19 +66,30 @@ class PublicApiClientTest {
     }
 
     @Test
-    @Transactional
-    public void 부동산_매매_실거래가_조회() throws Exception {
+    public void 부동산_매매_실거래가_조회_실패() throws Exception {
         //given
         String searchAddress = "방화대로7가길 35";
         boolean isRoadAddress = true;
         House house = makeHouse();
-        houseService.saveHouse(new HouseDto(house));
-
-        //when
-        List<HouseSaleContractDto> houseSaleContractDtoList = publicApiClient.getHouseSaleContractInfo(searchAddress, isRoadAddress);
+        houseRepository.save(house);
 
         //then
-        for (HouseSaleContractDto houseSaleContractDto : houseSaleContractDtoList) {
+        assertThrows(NonExistDataException.class, () -> publicApiClient.getHouseSaleContractInfo(searchAddress, "2023", isRoadAddress));
+    }
+
+    @Test
+    public void 부동산_매매_실거래가_조회_성공() throws Exception {
+        //given
+        String searchAddress = "방화대로7가길 35";
+        boolean isRoadAddress = true;
+        House house = makeHouse();
+        houseRepository.save(house);
+
+        //when
+        List<HouseSaleContractDto> houseSaleContractInfo = publicApiClient.getHouseSaleContractInfo(searchAddress, "2022", isRoadAddress);
+
+        //then
+        for (HouseSaleContractDto houseSaleContractDto : houseSaleContractInfo) {
             System.out.println(houseSaleContractDto);
         }
     }
@@ -85,12 +99,17 @@ class PublicApiClientTest {
         //given
         String searchAddress = "방이동 48-2";
         boolean isRoadAddress = false;
-        House house = makeHouse2();
-        houseService.saveHouse(new HouseDto(house));
+//        House house = makeHouse2();
+//        houseRepository.save(house);
 
         //when
-        publicApiClient.getHouseRentContractInfo(searchAddress, isRoadAddress);
+        List<HouseRentContractDto> houseRentContractInfo = publicApiClient.getHouseRentContractInfo(searchAddress, isRoadAddress);
+
         //then
+        for (HouseRentContractDto houseRentContractDto : houseRentContractInfo) {
+            System.out.println(houseRentContractDto);
+        }
+
     }
 
     @Test
