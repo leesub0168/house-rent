@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -60,13 +61,13 @@ class HouseSaleContractRepositoryTest {
     public void 실거래_계약_저장() throws Exception {
         //given
         HouseSaleContract houseSaleContract = makeHouseSaleContract();
-        houseRepository.saveHouse(houseSaleContract.getHouse());
+        houseRepository.save(houseSaleContract.getHouse());
 
 
         //when
         houseSaleContractRepository.saveHouseSaleContract(houseSaleContract);
-        House house = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
-        List<HouseSaleContract> houseSaleContractByHouse = houseSaleContractRepository.findHouseSaleContractByHouse(house.getId());
+        Optional<House> house = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
+        List<HouseSaleContract> houseSaleContractByHouse = houseSaleContractRepository.findHouseSaleContractByHouse(house.get().getId());
 
         //then
         assertNotNull(house);
@@ -78,12 +79,12 @@ class HouseSaleContractRepositoryTest {
     public void 실거래_계약_조회() throws Exception {
         //given
         HouseSaleContract houseSaleContract = makeHouseSaleContract();
-        houseRepository.saveHouse(houseSaleContract.getHouse());
+        houseRepository.save(houseSaleContract.getHouse());
         houseSaleContractRepository.saveHouseSaleContract(houseSaleContract);
-        House house = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
+        Optional<House> house = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
 
         //when
-        List<HouseSaleContract> houseSaleContractByHouse = houseSaleContractRepository.findHouseSaleContractByHouse(house.getId());
+        List<HouseSaleContract> houseSaleContractByHouse = houseSaleContractRepository.findHouseSaleContractByHouse(house.get().getId());
 
         //then
         assertEquals(1, houseSaleContractByHouse.size());

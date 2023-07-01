@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -41,15 +43,15 @@ class HouseRepositoryTest {
         House house = makeHouse();
 
         //when
-        houseRepository.saveHouse(house);
-        House findHouse = houseRepository.findHouseByRoadAddress(house.getRoad_name());
+        houseRepository.save(house);
+        Optional<House> findHouse = houseRepository.findHouseByRoadAddress(house.getRoad_name());
 
         //then
         assertAll(
-                () -> assertNotNull(findHouse),
-                () -> assertEquals(findHouse.getBuilding_main_num(), house.getBuilding_main_num()),
-                () -> assertEquals(findHouse.getBuilding_sub_num(), house.getBuilding_sub_num()),
-                () -> assertEquals(findHouse.getBjdong_cd(), house.getBjdong_cd())
+                () -> assertNotNull(findHouse.get()),
+                () -> assertEquals(findHouse.get().getBuilding_main_num(), house.getBuilding_main_num()),
+                () -> assertEquals(findHouse.get().getBuilding_sub_num(), house.getBuilding_sub_num()),
+                () -> assertEquals(findHouse.get().getBjdong_cd(), house.getBjdong_cd())
         );
     }
 
@@ -58,17 +60,17 @@ class HouseRepositoryTest {
     public void 집_지번주소_조회() {
         //given
         House house = makeHouse();
-        houseRepository.saveHouse(house);
+        houseRepository.save(house);
 
         //when
         String searchAddress = house.getDong() + " " + house.getLand_main_num() + "-" + house.getLand_sub_num();
-        House findHouse = houseRepository.findHouseByLandAddress(searchAddress);
+        Optional<House> findHouse = houseRepository.findHouseByLandAddress(searchAddress);
 
         //then
-        assertEquals(house.getBjdong_cd(), findHouse.getBjdong_cd());
-        assertEquals(house.getCity(), findHouse.getCity());
-        assertEquals(house.getSgg_cd(), findHouse.getSgg_cd());
-        assertEquals(house.getZipcode(), findHouse.getZipcode());
+        assertEquals(house.getBjdong_cd(), findHouse.get().getBjdong_cd());
+        assertEquals(house.getCity(), findHouse.get().getCity());
+        assertEquals(house.getSgg_cd(), findHouse.get().getSgg_cd());
+        assertEquals(house.getZipcode(), findHouse.get().getZipcode());
     }
 
 }

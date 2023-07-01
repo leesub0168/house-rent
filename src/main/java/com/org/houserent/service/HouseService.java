@@ -1,7 +1,7 @@
 package com.org.houserent.service;
 
 import com.org.houserent.domain.House;
-import com.org.houserent.exception.NonExistMemberException;
+import com.org.houserent.exception.NonExistHouseException;
 import com.org.houserent.repository.HouseRepository;
 import com.org.houserent.service.dto.HouseDto;
 import lombok.RequiredArgsConstructor;
@@ -34,29 +34,26 @@ public class HouseService {
                 .detail_address(houseDto.getDetail_address())
                 .build();
 
-        houseRepository.saveHouse(house);
+        houseRepository.save(house);
 
         return house.getId();
     }
 
     public HouseDto findHouseById(Long id) {
-        House findHouse = houseRepository.findHouseById(id);
-        if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
-
-        return new HouseDto(findHouse);
+        Optional<House> findHouse = houseRepository.findById(id);
+        return new HouseDto(findHouse.orElseThrow(() -> new NonExistHouseException("주소 정보가 존재하지 않습니다.")));
     }
 
     public Optional<HouseDto> findHouseByRoadAddress(String searchAddress) {
-        House findHouse = houseRepository.findHouseByRoadAddress(searchAddress);
-//        if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
-        return Optional.ofNullable(new HouseDto(findHouse));
+        Optional<House> findHouse = houseRepository.findHouseByRoadAddress(searchAddress);
+
+        return findHouse.map(h -> new HouseDto(h));
     }
 
     public Optional<HouseDto> findHouseByLandAddress(String searchAddress) {
-        House findHouse = houseRepository.findHouseByLandAddress(searchAddress);
-//        if(findHouse == null) throw new NonExistMemberException("주소 정보가 존재하지 않습니다.");
+        Optional<House> findHouse = houseRepository.findHouseByLandAddress(searchAddress);
 
-        return Optional.ofNullable(new HouseDto(findHouse));
+        return findHouse.map(h -> new HouseDto(h));
     }
 
 }

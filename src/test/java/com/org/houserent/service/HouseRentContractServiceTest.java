@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +25,6 @@ class HouseRentContractServiceTest {
 
     @Autowired
     HouseRentContractService houseRentContractService;
-
 
     public House makeHouse() {
         return House.builder()
@@ -61,7 +61,7 @@ class HouseRentContractServiceTest {
         House house = makeHouse();
         HouseRentContractDto houseRentContractDto = makeHouseRentContractDto(house);
 
-        houseRepository.saveHouse(house);
+        houseRepository.save(house);
 
         //when
         Long id = houseRentContractService.saveHouseRentContract(houseRentContractDto);
@@ -77,7 +77,7 @@ class HouseRentContractServiceTest {
         House house = makeHouse();
         HouseRentContractDto houseRentContractDto = makeHouseRentContractDto(house);
 
-        houseRepository.saveHouse(house);
+        houseRepository.save(house);
 
         Long id = houseRentContractService.saveHouseRentContract(houseRentContractDto);
 
@@ -101,9 +101,9 @@ class HouseRentContractServiceTest {
         House house = makeHouse();
         Long houseId = houseService.saveHouse(new HouseDto(house));
 
-        House findHouse = houseRepository.findHouseById(houseId);
+        Optional<House> findHouse = houseRepository.findById(houseId);
 
-        HouseRentContractDto houseRentContractDto = makeHouseRentContractDto(findHouse);
+        HouseRentContractDto houseRentContractDto = makeHouseRentContractDto(findHouse.get());
         Long id = houseRentContractService.saveHouseRentContract(houseRentContractDto);
 
         //when

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -67,11 +68,11 @@ class HouseSaleContractServiceTest {
         //given
         House house = makeHouse();
 
-        when(houseRepository.findHouseByRoadAddress(any())).thenReturn(house);
+        when(houseRepository.findHouseByRoadAddress(any())).thenReturn(Optional.ofNullable(house));
 
-        House findHouse = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
+        Optional<House> findHouse = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
 
-        HouseSaleContractDto houseSaleContractDto = makeHouseSaleContractDto(findHouse);
+        HouseSaleContractDto houseSaleContractDto = makeHouseSaleContractDto(findHouse.get());
 
         //when
         Long id = houseSaleContractService.saveHouseSaleContract(houseSaleContractDto);
@@ -85,10 +86,10 @@ class HouseSaleContractServiceTest {
     public void 실거래가_계약_정보_아이디로_조회() throws Exception {
         //given
         House house = makeHouse();
-        when(houseRepository.findHouseByRoadAddress(any())).thenReturn(house);
+        when(houseRepository.findHouseByRoadAddress(any())).thenReturn(Optional.ofNullable(house));
 
-        House findHouse = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
-        HouseSaleContractDto houseSaleContractDto = makeHouseSaleContractDto(findHouse);
+        Optional<House> findHouse = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
+        HouseSaleContractDto houseSaleContractDto = makeHouseSaleContractDto(findHouse.get());
         Long id = houseSaleContractService.saveHouseSaleContract(houseSaleContractDto);
 
         //when
@@ -106,8 +107,8 @@ class HouseSaleContractServiceTest {
         House house = makeHouse();
         Long houseId = houseService.saveHouse(new HouseDto(house));
 
-        House findHouse = houseRepository1.findHouseById(houseId);
-        HouseSaleContractDto houseSaleContractDto = makeHouseSaleContractDto(findHouse);
+        Optional<House> findHouse = houseRepository1.findById(houseId);
+        HouseSaleContractDto houseSaleContractDto = makeHouseSaleContractDto(findHouse.get());
         houseSaleContractService.saveHouseSaleContract(houseSaleContractDto);
         
         //when
