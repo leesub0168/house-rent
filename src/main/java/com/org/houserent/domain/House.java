@@ -82,11 +82,23 @@ public class House {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         House house = (House) o;
-        return Objects.equals(id, house.id) && Objects.equals(building_year, house.building_year) && Objects.equals(building_name, house.building_name) && Objects.equals(building_usage, house.building_usage) && Objects.equals(sgg_cd, house.sgg_cd) && Objects.equals(sgg_nm, house.sgg_nm) && Objects.equals(bjdong_cd, house.bjdong_cd) && Objects.equals(bjdong_nm, house.bjdong_nm) && Objects.equals(building_main_num, house.building_main_num) && Objects.equals(building_sub_num, house.building_sub_num) && Objects.equals(land_main_num, house.land_main_num) && Objects.equals(land_sub_num, house.land_sub_num) && Objects.equals(zipcode, house.zipcode) && Objects.equals(city, house.city) && Objects.equals(gu, house.gu) && Objects.equals(dong, house.dong) && Objects.equals(road_name, house.road_name) && Objects.equals(detail_address, house.detail_address);
+        return Objects.equals(id, house.id) && Objects.equals(building_year, house.building_year)
+                && Objects.equals(building_name, house.building_name) && Objects.equals(building_usage, house.building_usage)
+                && Objects.equals(sgg_cd, house.sgg_cd) && Objects.equals(sgg_nm, house.sgg_nm)
+                && Objects.equals(bjdong_cd, house.bjdong_cd) && Objects.equals(bjdong_nm, house.bjdong_nm)
+                && Objects.equals(building_main_num, house.building_main_num) && Objects.equals(building_sub_num, house.building_sub_num)
+                && Objects.equals(land_main_num, house.land_main_num) && Objects.equals(land_sub_num, house.land_sub_num)
+                && Objects.equals(zipcode, house.zipcode) && Objects.equals(city, house.city) && Objects.equals(gu, house.gu)
+                && Objects.equals(dong, house.dong) && Objects.equals(road_name, house.road_name)
+                && Objects.equals(detail_address, house.detail_address
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, building_year, building_name, building_usage, sgg_cd, sgg_nm, bjdong_cd, bjdong_nm, building_main_num, building_sub_num, land_main_num, land_sub_num, zipcode, city, gu, dong, road_name, detail_address);
+        return Objects.hash(id, building_year, building_name, building_usage,
+                sgg_cd, sgg_nm, bjdong_cd, bjdong_nm, building_main_num, building_sub_num,
+                land_main_num, land_sub_num, zipcode, city, gu, dong, road_name, detail_address
+        );
     }
 }
