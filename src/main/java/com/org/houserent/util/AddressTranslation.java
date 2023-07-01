@@ -2,11 +2,12 @@ package com.org.houserent.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.org.houserent.exception.NonExistHouseException;
+import com.org.houserent.exception.NonExistAddressException;
 import com.org.houserent.service.HouseService;
 import com.org.houserent.service.dto.HouseDto;
 import com.org.houserent.util.jusoApi.dto.JusoApiDataDto;
 import com.org.houserent.util.jusoApi.dto.JusoApiMainDto;
+import com.org.houserent.util.jusoApi.dto.JusoApiSubDtoResultCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,20 +40,25 @@ public class AddressTranslation {
     private int countPerPage = 10;
 
     public Optional<HouseDto> getAddressInfo(String searchAddress) {
+        Optional<HouseDto> houseDto = Optional.empty();
 
         URI uri = makeUri(searchAddress);
 
         String str = callApiAcceptJson(uri);
         try {
             JusoApiMainDto jusoApiMainDto = jsonStringToObject(str, JusoApiMainDto.class);
+            JusoApiSubDtoResultCode resultCode = jusoApiMainDto.getResults().getCommon();
+
+            if(resultCode.getTotalCount() <= 0) throw new NonExistAddressException("주소 정보를 찾을수 없습니다.");
+
             List<JusoApiDataDto> jusoApiDataDtoList = jusoApiMainDto.getResults().getJuso();
             JusoApiDataDto jusoApiDataDto = jusoApiDataDtoList.get(0);
-
-            return Optional.ofNullable(jusoApiDataDto.toHouseDto());
+            houseDto = Optional.ofNullable(jusoApiDataDto.toHouseDto());
         } catch (JsonProcessingException jpe) {
             jpe.printStackTrace();
         }
-        throw new NonExistHouseException("주소 정보를 찾을수 없습니다.");
+        houseDto.orElseThrow(() -> new NonExistAddressException("주소 정보를 찾을수 없습니다."));
+        return houseDto;
     }
 
     public void saveAddressInfo(List<JusoApiDataDto> jusoApiDataDtoList) {
@@ -83,9 +89,7 @@ public class AddressTranslation {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
-                .blockOptional().orElseThrow(
-                        () -> new IllegalArgumentException("공공 api 호출 실패")
-                );
+                .blockOptional().orElseThrow(() -> new IllegalArgumentException("공공 api 호출 실패"));
     }
 
 }

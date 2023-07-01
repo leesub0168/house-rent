@@ -2,7 +2,7 @@ package com.org.houserent.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.org.houserent.domain.House;
+import com.org.houserent.exception.NonExistHouseException;
 import com.org.houserent.service.HouseService;
 import com.org.houserent.service.dto.HouseDto;
 import com.org.houserent.service.dto.HouseSaleContractDto;
@@ -62,6 +62,8 @@ public class PublicApiClient {
         if(isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
         else houseDto = houseService.findHouseByLandAddress(searchAddress);
 
+        houseDto.orElseThrow(() -> new NonExistHouseException("주소 정보가 존재하지 않습니다."));
+
         URI uri = makeUri(
                 key, resultType, sale,
                 start_index, end_index,
@@ -97,6 +99,7 @@ public class PublicApiClient {
         if (isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
         else houseDto = houseService.findHouseByLandAddress(searchAddress);
 
+        houseDto.orElseThrow(() -> new NonExistHouseException("주소 정보가 존재하지 않습니다."));
 
         URI uri = makeUri(
                 key, resultType, rent,
@@ -144,9 +147,7 @@ public class PublicApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
-                .blockOptional().orElseThrow(
-                        () -> new IllegalArgumentException("공공 api 호출 실패")
-                );
+                .blockOptional().orElseThrow(() -> new IllegalArgumentException("공공 api 호출 실패"));
     }
 
 }

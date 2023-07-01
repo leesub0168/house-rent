@@ -1,13 +1,16 @@
 package com.org.houserent.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HouseSaleContract {
     @Id @GeneratedValue
     @Column(name = "house_sale_contract_id")
@@ -28,9 +31,6 @@ public class HouseSaleContract {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "house_id")
     private House house;
-
-    public HouseSaleContract() {
-    }
 
     @Builder
     public HouseSaleContract(Long id, double building_area, double site_area, double floor,

@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 public class JusoApiSubDtoResultCode {
     private String errorMessage;
-    private String countPerPage;
-    private String totalCount;
+    private int countPerPage;
+    private int totalCount;
     private String errorCode;
-    private String currentPage;
+    private int currentPage;
 }
