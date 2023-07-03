@@ -25,5 +25,6 @@
 - JPA
 - MySQL
 - Spring Data JPA
+- QueryDSL
 
 
