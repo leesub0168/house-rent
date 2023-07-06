@@ -21,7 +21,7 @@ public class MemberController {
 
     @PostMapping("/join")
     public ResponseDto join(@RequestBody MemberRequestDto memberRequestDto) {
-        memberService.joinMember(memberRequestDto.toMemberDto());
+        memberService.joinMember(memberRequestDto.toMemberJoinDto());
         return ResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message("가입되었습니다")
