@@ -6,13 +6,11 @@ import com.org.houserent.exception.NonExistMemberException;
 import com.org.houserent.exception.WrongPasswordException;
 import com.org.houserent.repository.MemberRepository;
 import com.org.houserent.service.dto.MemberDto;
+import com.org.houserent.service.dto.MemberJoinDto;
 import com.org.houserent.util.SHACryptoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,35 +23,35 @@ public class MemberService {
      * 회원 가입
      * */
     @Transactional
-    public Long joinMember(MemberDto memberDto) {
-        validateDuplicateUserId(memberDto.getUser_id());
-        String encrypted_password = SHACryptoUtil.encrypt(memberDto.getPassword());
-        Member member = new Member(memberDto.getUser_id(), encrypted_password, memberDto.getName(),
-                memberDto.getEmail(), LocalDateTime.now());
-        memberRepository.save(member);
-        return member.getId();
+    public Long joinMember(MemberJoinDto memberJoinDto) {
+        validateDuplicateUserId(memberJoinDto.getUser_id());
+
+        String encrypted_password = SHACryptoUtil.encrypt(memberJoinDto.getPassword());
+        memberJoinDto.setEncryptedPassword(encrypted_password);
+
+        return memberRepository.save(memberJoinDto.toEntity()).getId();
     }
 
     /**
      * 중복 아이디 체크
      * */
     public void validateDuplicateUserId(String userId) {
-        Optional<Member> member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId);
-        if(member.isPresent()) throw new DuplicateMemberException("이미 존재하는 회원입니다.");
+        memberRepository.findByUserIdAndWithdrawDateIsNull(userId)
+                .ifPresent(m -> { throw new DuplicateMemberException("이미 존재하는 회원입니다.");});
     }
 
     /**
      * 회원 로그인
      * */
     public MemberDto login(String userId, String password) {
-        Optional<Member> member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId);
-        if (member.isEmpty()) throw new NonExistMemberException("존재하지 않는 회원입니다");
+        Member member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId)
+                .orElseThrow(() -> new NonExistMemberException("존재하지 않는 회원입니다."));
 
-        validatePassword(password, member.get().getPassword());
+        validatePassword(password, member.getPassword());
 
         return MemberDto.builder()
-                .name(member.get().getName())
-                .email(member.get().getEmail())
+                .name(member.getName())
+                .email(member.getEmail())
                 .build();
     }
 
@@ -72,10 +70,10 @@ public class MemberService {
      */
 
     public void checkPasswordBeforeChangePassword(String userId, String password) {
-        Optional<Member> member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId);
-        if(member.isEmpty()) throw new NonExistMemberException("존재하지 않는 회원입니다.");
+        Member member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId)
+                .orElseThrow(() -> new NonExistMemberException("존재하지 않는 회원입니다."));
 
-        validatePassword(password, member.get().getPassword());
+        validatePassword(password, member.getPassword());
     }
     
 
@@ -83,9 +81,9 @@ public class MemberService {
      * id로 회원 조회
      * */
     public MemberDto findMemberById(Long id) {
-        Optional<Member> findMember = memberRepository.findById(id);
-        if(findMember.isEmpty()) throw new NonExistMemberException("존재하지 않는 회원입니다.");
-        return new MemberDto(findMember.get());
+        return memberRepository.findById(id)
+                .map(MemberDto::new)
+                .orElseThrow(() -> new NonExistMemberException("존재하지 않는 회원입니다."));
     }
 
     /**
@@ -93,9 +91,10 @@ public class MemberService {
      */
     @Transactional
     public void updateMemberInfo(MemberDto memberDto) {
-        Optional<Member> member = memberRepository.findByUserIdAndWithdrawDateIsNull(memberDto.getUser_id());
-        if (member.isEmpty()) throw new NonExistMemberException("존재하지 않는 회원입니다");
-        member.get().updateMemberInfo(memberDto.getName(), memberDto.getEmail());
+        Member member = memberRepository.findByUserIdAndWithdrawDateIsNull(memberDto.getUser_id())
+                .orElseThrow(() -> new NonExistMemberException("존재하지 않는 회원입니다."));
+
+        member.updateMemberInfo(memberDto.getName(), memberDto.getEmail());
     }
 
     /**
@@ -103,10 +102,11 @@ public class MemberService {
      */
     @Transactional
     public void changePassword(String userId, String newPassword) {
-        Optional<Member> member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId);
-        if (member.isEmpty()) throw new NonExistMemberException("존재하지 않는 회원입니다");
+        Member member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId)
+                .orElseThrow(() -> new NonExistMemberException("존재하지 않는 회원입니다."));
+
         String encrypted_password = SHACryptoUtil.encrypt(newPassword);
-        member.get().updatePassword(encrypted_password);
+        member.updatePassword(encrypted_password);
     }
 
 
@@ -115,17 +115,17 @@ public class MemberService {
      */
     @Transactional
     public void withDrawMember(String userId, String password) {
-        Optional<Member> member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId);
-        if (member.isEmpty()) throw new NonExistMemberException("존재하지 않는 회원입니다");
-        validatePassword(password, member.get().getPassword());
+        Member member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId)
+                .orElseThrow(() -> new NonExistMemberException("존재하지 않는 회원입니다"));
 
-        member.get().withDrawMember();
+        validatePassword(password, member.getPassword());
+
+        member.withDrawMember();
     }
 
     public MemberDto findMemberByUserId(String userId) {
-        Optional<Member> member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId);
-        if (member.isEmpty()) throw new NonExistMemberException("존재하지 않는 회원입니다");
-
-        return new MemberDto(member.get());
+        return memberRepository.findByUserIdAndWithdrawDateIsNull(userId)
+                .map(MemberDto::new)
+                .orElseThrow(() -> new NonExistMemberException("존재하지 않는 회원입니다"));
     }
 }

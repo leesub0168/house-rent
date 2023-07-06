@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,7 @@ public class Member {
     private LocalDateTime joinDate;
     private LocalDateTime withdrawDate;
 
+    @Builder
     public Member(String userId, String password, String name, String email, LocalDateTime joinDate) {
         this.userId = userId;
         this.password = password;
