@@ -4,16 +4,16 @@ import com.org.houserent.exception.DuplicateMemberException;
 import com.org.houserent.exception.NonExistMemberException;
 import com.org.houserent.exception.WrongPasswordException;
 import com.org.houserent.service.dto.MemberDto;
+import com.org.houserent.service.dto.MemberJoinDto;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
 class MemberServiceTest {
@@ -21,90 +21,97 @@ class MemberServiceTest {
     @Autowired
     MemberService memberService;
 
-    public MemberDto createMemberDTO() {
+    public MemberJoinDto createMemberJoinDto() {
         String userId = "leesub0168";
         String name = "이수빈";
         String password = "asgsdg";
         String email = "sdgsdg@naver.com";
 
-        return MemberDto.builder()
+        return MemberJoinDto.builder()
                 .user_id(userId)
                 .name(name)
                 .password(password)
                 .email(email)
+                .joinDate(LocalDateTime.now())
                 .build();
     }
 
     @Test
     public void 회원가입_성공() throws Exception {
         //given
-        MemberDto memberDTO = createMemberDTO();
+        MemberJoinDto memberJoinDto = createMemberJoinDto();
 
         //when
-        Long memberId = memberService.joinMember(memberDTO);
+        Long memberId = memberService.joinMember(memberJoinDto);
         MemberDto findMember = memberService.findMemberById(memberId);
 
         //then
-        assertEquals(memberDTO.getUser_id(), findMember.getUser_id());
+        assertEquals(memberJoinDto.getUser_id(), findMember.getUser_id());
     }
     
     @Test
     public void 회원가입_실패_중복아이디() throws Exception {
         //given
-        MemberDto memberDto1 = createMemberDTO();
-        MemberDto memberDto2 = createMemberDTO();
+        MemberJoinDto memberJoinDto1 = createMemberJoinDto();
+        MemberJoinDto memberJoinDto2 = createMemberJoinDto();
 
         //when
-        memberService.joinMember(memberDto1);
+        memberService.joinMember(memberJoinDto1);
         
         //then
-        assertThrows(DuplicateMemberException.class, () -> memberService.joinMember(memberDto2));
+        assertThrows(DuplicateMemberException.class, () -> memberService.joinMember(memberJoinDto2));
     }
     
     @Test
     public void 로그인_성공() throws Exception {
         //given
-        MemberDto memberDTO = createMemberDTO();
-        memberService.joinMember(memberDTO);
+        MemberJoinDto memberJoinDto = createMemberJoinDto();
+        memberService.joinMember(memberJoinDto);
+
+        String userId = "leesub0168";
+        String password = "asgsdg";
 
         //when
-        MemberDto loginMember = memberService.login(memberDTO.getUser_id(), memberDTO.getPassword());
+        MemberDto loginMember = memberService.login(userId, password);
 
         //then
-        assertEquals(loginMember.getName(), memberDTO.getName());
-        assertEquals(loginMember.getEmail(), memberDTO.getEmail());
+        assertEquals(loginMember.getName(), memberJoinDto.getName());
+        assertEquals(loginMember.getEmail(), memberJoinDto.getEmail());
     }
     
     @Test
     public void 로그인_실패_비밀번호_불일치() throws Exception {
         //given
-        MemberDto memberDTO = createMemberDTO();
-        memberService.joinMember(memberDTO);
+        MemberJoinDto memberJoinDto = createMemberJoinDto();
+        memberService.joinMember(memberJoinDto);
+
+        String userId = "leesub0168";
+        String password = "wrongpwd";
 
         //when
-        
-        //then
-        assertThrows(WrongPasswordException.class, () -> memberService.login(memberDTO.getUser_id(), "wrongpwd"));
+        assertThrows(WrongPasswordException.class, () -> memberService.login(userId, password));
     }
     
     @Test
     public void 회원_탈퇴() throws Exception {
         //given
-        MemberDto memberDTO = createMemberDTO();
-        memberService.joinMember(memberDTO);
+        MemberJoinDto memberJoinDto = createMemberJoinDto();
+        memberService.joinMember(memberJoinDto);
         
         //when
-        memberService.withDrawMember(memberDTO.getUser_id(), memberDTO.getPassword());
+        String userId = "leesub0168";
+        String password = "asgsdg";
+        memberService.withDrawMember(userId, password);
         
         //then
-        assertThrows(NonExistMemberException.class, () -> memberService.login(memberDTO.getUser_id(), memberDTO.getPassword()));
+        assertThrows(NonExistMemberException.class, () -> memberService.login(userId, password));
     }
 
     @Test
     public void id로_회원조회() throws Exception {
         //given
-        MemberDto memberDTO = createMemberDTO();
-        memberService.joinMember(memberDTO);
+        MemberJoinDto memberJoinDto = createMemberJoinDto();
+        memberService.joinMember(memberJoinDto);
 
         //when
         Long id = 1234L;
@@ -116,29 +123,31 @@ class MemberServiceTest {
     @Test
     public void 비밀번호_변경전_패스워드_검증() throws Exception {
         //given
-        MemberDto memberDTO = createMemberDTO();
-        memberService.joinMember(memberDTO);
+        MemberJoinDto memberJoinDto = createMemberJoinDto();
+        memberService.joinMember(memberJoinDto);
 
         //when
+        String userId = "leesub0168";
+        String password = "asgsdg";
 
         //then
         assertDoesNotThrow(
-                () -> memberService.checkPasswordBeforeChangePassword(memberDTO.getUser_id(), memberDTO.getPassword())
+                () -> memberService.checkPasswordBeforeChangePassword(userId, password)
         );
     }
 
     @Test
     public void 회원정보_수정() throws Exception {
         //given
-        MemberDto memberDTO = createMemberDTO();
-        memberService.joinMember(memberDTO);
+        MemberJoinDto memberJoinDto = createMemberJoinDto();
+        memberService.joinMember(memberJoinDto);
 
         String newName = "testName";
         String email = "newMail@naver.com";
         MemberDto newMemberDto = MemberDto.builder()
-                .user_id(memberDTO.getUser_id())
+                .user_id(memberJoinDto.getUser_id())
                 .name(newName)
-                .password(memberDTO.getPassword())
+                .password(memberJoinDto.getPassword())
                 .email(email)
                 .build();
 
@@ -157,14 +166,14 @@ class MemberServiceTest {
     @Test
     public void 비밀번호_변경() throws Exception {
         //given
-        MemberDto memberDTO = createMemberDTO();
-        memberService.joinMember(memberDTO);
+        MemberJoinDto memberJoinDto = createMemberJoinDto();
+        memberService.joinMember(memberJoinDto);
         
         //when
         String newPassword = "newpassword";
-        memberService.changePassword(memberDTO.getUser_id(), newPassword);
+        memberService.changePassword(memberJoinDto.getUser_id(), newPassword);
 
         //then
-        assertDoesNotThrow(() -> memberService.login(memberDTO.getUser_id(), newPassword));
+        assertDoesNotThrow(() -> memberService.login(memberJoinDto.getUser_id(), newPassword));
     }
 }
