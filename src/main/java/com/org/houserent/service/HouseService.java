@@ -18,42 +18,20 @@ public class HouseService {
 
     @Transactional
     public Long saveHouse(HouseDto houseDto) {
-        House house = House.builder()
-                .sgg_cd(houseDto.getSgg_cd())
-                .sgg_nm(houseDto.getSgg_nm())
-                .bjdong_cd(houseDto.getBjdong_cd())
-                .zipcode(houseDto.getZipcode())
-                .city(houseDto.getCity())
-                .gu(houseDto.getGu())
-                .dong(houseDto.getDong())
-                .road_name(houseDto.getRoad_name())
-                .building_main_num(houseDto.getBuilding_main_num())
-                .building_sub_num(houseDto.getBuilding_sub_num())
-                .land_main_num(houseDto.getLand_main_num())
-                .land_sub_num(houseDto.getLand_sub_num())
-                .detail_address(houseDto.getDetail_address())
-                .build();
-
-        houseRepository.save(house);
-
-        return house.getId();
+        return houseRepository.save(houseDto.toEntity()).getId();
     }
 
     public HouseDto findHouseById(Long id) {
-        Optional<House> findHouse = houseRepository.findById(id);
-        return new HouseDto(findHouse.orElseThrow(() -> new NonExistHouseException("주소 정보가 존재하지 않습니다.")));
+        return houseRepository.findById(id).map(HouseDto::new)
+                .orElseThrow(() -> new NonExistHouseException("주소 정보가 존재하지 않습니다."));
     }
 
     public Optional<HouseDto> findHouseByRoadAddress(String searchAddress) {
-        Optional<House> findHouse = houseRepository.findHouseByRoadAddress(searchAddress);
-
-        return findHouse.map(h -> new HouseDto(h));
+        return houseRepository.findHouseByRoadAddress(searchAddress).map(h -> new HouseDto(h));
     }
 
     public Optional<HouseDto> findHouseByLandAddress(String searchAddress) {
-        Optional<House> findHouse = houseRepository.findHouseByLandAddress(searchAddress);
-
-        return findHouse.map(h -> new HouseDto(h));
+        return houseRepository.findHouseByLandAddress(searchAddress).map(h -> new HouseDto(h));
     }
 
 }
