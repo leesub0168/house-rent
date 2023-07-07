@@ -94,10 +94,10 @@ class HouseRentContractServiceTest {
     }
 
     @Test
-    public void 전월세_계약_정보_집정보로_조회(@Autowired HouseService houseService) throws Exception {
+    public void 전월세_계약_정보_집정보로_조회() throws Exception {
         //given
         House house = makeHouse();
-        Long houseId = houseService.saveHouse(new HouseDto(house));
+        Long houseId = houseRepository.save(house).getId();
 
         Optional<House> findHouse = houseRepository.findById(houseId);
 
