@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 class HouseSaleContractRepositoryTest {
 
     @Autowired
@@ -57,7 +58,6 @@ class HouseSaleContractRepositoryTest {
     }
 
     @Test
-    @Transactional
     public void 실거래_계약_저장() throws Exception {
         //given
         HouseSaleContract houseSaleContract = makeHouseSaleContract();
@@ -65,9 +65,9 @@ class HouseSaleContractRepositoryTest {
 
 
         //when
-        houseSaleContractRepository.saveHouseSaleContract(houseSaleContract);
+        houseSaleContractRepository.save(houseSaleContract);
         Optional<House> house = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
-        List<HouseSaleContract> houseSaleContractByHouse = houseSaleContractRepository.findHouseSaleContractByHouse(house.get().getId());
+        List<HouseSaleContract> houseSaleContractByHouse = houseSaleContractRepository.findHouseSaleContractsByHouse(house.get());
 
         //then
         assertNotNull(house);
@@ -75,16 +75,15 @@ class HouseSaleContractRepositoryTest {
     }
 
     @Test
-    @Transactional
     public void 실거래_계약_조회() throws Exception {
         //given
         HouseSaleContract houseSaleContract = makeHouseSaleContract();
         houseRepository.save(houseSaleContract.getHouse());
-        houseSaleContractRepository.saveHouseSaleContract(houseSaleContract);
+        houseSaleContractRepository.save(houseSaleContract);
         Optional<House> house = houseRepository.findHouseByRoadAddress("방화대로7가길 35");
 
         //when
-        List<HouseSaleContract> houseSaleContractByHouse = houseSaleContractRepository.findHouseSaleContractByHouse(house.get().getId());
+        List<HouseSaleContract> houseSaleContractByHouse = houseSaleContractRepository.findHouseSaleContractsByHouse(house.get());
 
         //then
         assertEquals(1, houseSaleContractByHouse.size());
