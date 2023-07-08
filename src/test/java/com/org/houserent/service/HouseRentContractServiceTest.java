@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 class HouseRentContractServiceTest {
     @Autowired
     HouseRepository houseRepository;
@@ -55,7 +56,6 @@ class HouseRentContractServiceTest {
     }
 
     @Test
-    @Transactional
     public void 전월세_계약_정보_저장() throws Exception {
         //given
         House house = makeHouse();
@@ -71,7 +71,6 @@ class HouseRentContractServiceTest {
     }
 
     @Test
-    @Transactional
     public void 전월세_계약_정보_아이디로_조회() throws Exception {
         //given
         House house = makeHouse();
@@ -95,11 +94,10 @@ class HouseRentContractServiceTest {
     }
 
     @Test
-    @Transactional
-    public void 전월세_계약_정보_집정보로_조회(@Autowired HouseService houseService) throws Exception {
+    public void 전월세_계약_정보_집정보로_조회() throws Exception {
         //given
         House house = makeHouse();
-        Long houseId = houseService.saveHouse(new HouseDto(house));
+        Long houseId = houseRepository.save(house).getId();
 
         Optional<House> findHouse = houseRepository.findById(houseId);
 

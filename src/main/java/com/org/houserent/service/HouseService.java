@@ -27,11 +27,13 @@ public class HouseService {
     }
 
     public Optional<HouseDto> findHouseByRoadAddress(String searchAddress) {
-        return houseRepository.findHouseByRoadAddress(searchAddress).map(h -> new HouseDto(h));
+        return houseRepository.findHouseByRoadAddress(searchAddress)
+                .map(HouseDto::new);
     }
 
     public Optional<HouseDto> findHouseByLandAddress(String searchAddress) {
-        return houseRepository.findHouseByLandAddress(searchAddress).map(h -> new HouseDto(h));
+        return houseRepository.findHouseByLandAddress(searchAddress)
+                .map(HouseDto::new);
     }
 
 }

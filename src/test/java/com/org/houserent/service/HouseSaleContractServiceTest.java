@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 class HouseSaleContractServiceTest {
 
     @Mock
@@ -63,7 +64,6 @@ class HouseSaleContractServiceTest {
     }
 
     @Test
-    @Transactional
     public void 실거래가_계약_정보_저장() throws Exception {
         //given
         House house = makeHouse();
@@ -82,7 +82,6 @@ class HouseSaleContractServiceTest {
     }
 
     @Test
-    @Transactional
     public void 실거래가_계약_정보_아이디로_조회() throws Exception {
         //given
         House house = makeHouse();
@@ -100,12 +99,10 @@ class HouseSaleContractServiceTest {
     }
     
     @Test
-    @Transactional
-    public void 실거래가_계약_정보_집정보로_조회(@Autowired HouseService houseService,
-                                   @Autowired HouseRepository houseRepository1) throws Exception {
+    public void 실거래가_계약_정보_집정보로_조회(@Autowired HouseRepository houseRepository1) throws Exception {
         //given
         House house = makeHouse();
-        Long houseId = houseService.saveHouse(new HouseDto(house));
+        Long houseId = houseRepository1.save(house).getId();
 
         Optional<House> findHouse = houseRepository1.findById(houseId);
         HouseSaleContractDto houseSaleContractDto = makeHouseSaleContractDto(findHouse.get());
