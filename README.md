@@ -14,6 +14,7 @@
 - 공공 데이터 API 연계
   - 서울시 부동산 전월세가 정보
   - 서울시 부동산 실거래가 정보
+  - 주소 정보 검색 API (https://business.juso.go.kr/addrlink/main.do?cPath=99MM)
 - 기타
   - 전세가율 계산
 ## 화면 설계
