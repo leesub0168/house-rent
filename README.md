@@ -12,8 +12,8 @@
   - 해당 주소의 최근 전월세 가격 조회 
   - 주변 집들의 전월세 가격 조회
 - 공공 데이터 API 연계
-  - 서울시 부동산 전월세가 정보
-  - 서울시 부동산 실거래가 정보
+  - 서울시 부동산 전월세가 정보 (http://data.seoul.go.kr/dataList/OA-21276/S/1/datasetView.do)
+  - 서울시 부동산 실거래가 정보 (http://data.seoul.go.kr/dataList/OA-21275/S/1/datasetView.do)
   - 주소 정보 검색 API (https://business.juso.go.kr/addrlink/main.do?cPath=99MM)
 - 기타
   - 전세가율 계산
