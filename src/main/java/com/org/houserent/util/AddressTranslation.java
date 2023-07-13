@@ -17,8 +17,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -36,13 +38,13 @@ public class AddressTranslation {
 
     private final HouseService houseService;
 
-    private int currentPage = 1;
-    private int countPerPage = 10;
+    private int countPerPage = 100;
 
     public Optional<HouseDto> getAddressInfo(String searchAddress) {
         Optional<HouseDto> houseDto = Optional.empty();
+        int currentPage = 1;
 
-        URI uri = makeUri(searchAddress);
+        URI uri = makeUri(searchAddress, currentPage, countPerPage);
 
         String str = callApiAcceptJson(uri);
         try {
@@ -61,6 +63,60 @@ public class AddressTranslation {
         return houseDto;
     }
 
+    public List<HouseDto> getAddressInfoList(String searchAddress) {
+        List<HouseDto> result = new ArrayList<>();
+        int currentPage = 1;
+        URI uri = makeUri(searchAddress, currentPage, countPerPage);
+
+        String str = callApiAcceptJson(uri);
+        try {
+            JusoApiMainDto jusoApiMainDto = jsonStringToObject(str, JusoApiMainDto.class);
+            JusoApiSubDtoResultCode resultCode = jusoApiMainDto.getResults().getCommon();
+
+            int totalCount = resultCode.getTotalCount();
+
+            if(totalCount <= 0) throw new NonExistAddressException("주소 정보를 찾을수 없습니다.");
+
+            List<JusoApiDataDto> jusoApiDataDtoList = jusoApiMainDto.getResults().getJuso();
+
+            result.addAll(jusoApiDataDtoList.stream().map(JusoApiDataDto::toHouseDto).collect(Collectors.toList()));
+
+            if(totalCount > countPerPage) {
+                int callCount = Math.round(totalCount / countPerPage);
+                for (int i = 0; i < callCount; i++) {
+                    currentPage++;
+                    URI uri1 = makeUri(searchAddress, currentPage, countPerPage);
+                    String apiResult = callApiAcceptJson(uri1);
+
+                    List<HouseDto> houseDtos = jusoApiResultToHouseDto(apiResult);
+
+                    if(houseDtos.size() > 0) result.addAll(houseDtos);
+                }
+            }
+
+        } catch (JsonProcessingException jpe) {
+            jpe.printStackTrace();
+        }
+        return result;
+    }
+
+    private List<HouseDto> jusoApiResultToHouseDto(String str) {
+        List<HouseDto> result = new ArrayList<>();
+        try {
+            JusoApiMainDto jusoApiMainDto = jsonStringToObject(str, JusoApiMainDto.class);
+            JusoApiSubDtoResultCode resultCode = jusoApiMainDto.getResults().getCommon();
+
+            if(resultCode.getTotalCount() <= 0) throw new NonExistAddressException("주소 정보를 찾을수 없습니다.");
+
+            List<JusoApiDataDto> jusoApiDataDtoList = jusoApiMainDto.getResults().getJuso();
+
+            result = jusoApiDataDtoList.stream().map(JusoApiDataDto::toHouseDto).collect(Collectors.toList());
+        } catch (JsonProcessingException jpe) {
+            jpe.printStackTrace();
+        }
+        return result;
+    }
+
     public void saveAddressInfo(List<JusoApiDataDto> jusoApiDataDtoList) {
         for (JusoApiDataDto jusoApiDataDto : jusoApiDataDtoList) {
             HouseDto houseDto = jusoApiDataDto.toHouseDto();
@@ -68,7 +124,7 @@ public class AddressTranslation {
         }
     }
 
-    private URI makeUri(String keyword) {
+    private URI makeUri(String keyword, int currentPage, int countPerPage) {
         return UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .queryParam("confmKey", key)
                 .queryParam("currentPage", currentPage)

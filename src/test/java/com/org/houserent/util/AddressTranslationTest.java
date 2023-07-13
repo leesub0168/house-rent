@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,5 +39,20 @@ class AddressTranslationTest {
         //when
         assertThrows(NonExistAddressException.class, () -> addressTranslation.getAddressInfo(searchAddress));
         //then
+    }
+
+    @Test
+    public void 주소검색_다건_조회() throws Exception {
+        //given
+        String searchAddress1 = "벌말로";
+        String searchAddress2 = "아리랑로9길";
+
+        //when
+        List<HouseDto> addressInfoList1 = addressTranslation.getAddressInfoList(searchAddress1);
+        List<HouseDto> addressInfoList2 = addressTranslation.getAddressInfoList(searchAddress2);
+
+        //then
+        assertEquals(1375, addressInfoList1.size());
+        assertEquals(11, addressInfoList2.size());
     }
 }
