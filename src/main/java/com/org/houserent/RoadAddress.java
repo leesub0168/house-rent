@@ -1,15 +1,20 @@
 package com.org.houserent;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.*;
 
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
+@Entity
 public class RoadAddress {
     private String sigungu_cd;
     private String rd_sn;
     private String bjdong_sn;
+    @Id
     private String rd_nm;
     private String eng_rd_nm;
     private String sido_nm;
