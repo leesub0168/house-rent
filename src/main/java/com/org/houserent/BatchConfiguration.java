@@ -1,5 +1,7 @@
 package com.org.houserent;
 
+import com.org.houserent.util.AddressTranslation;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -9,6 +11,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
@@ -28,6 +31,8 @@ public class BatchConfiguration {
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
     private final JobCompletionNotificationListener listener;
+    private final EntityManagerFactory emf;
+    private final AddressTranslation addressTranslation;
 
     @Bean
     public Job job() {
@@ -42,10 +47,10 @@ public class BatchConfiguration {
     @Bean
     public Step step() {
         return new StepBuilder("step1", jobRepository)
-                .<RoadAddress, RoadAddress>chunk(10, transactionManager)
+                .<RoadAddress, RoadAddress>chunk(100, transactionManager)
                 .reader(jsonReader())
                 .processor(processor())
-                .writer(writer())
+                .writer(jpaWriter())
                 .build();
     }
 
@@ -60,7 +65,7 @@ public class BatchConfiguration {
 
     @Bean
     public RoadAddressItemProcessor processor() {
-        return new RoadAddressItemProcessor();
+        return new RoadAddressItemProcessor(addressTranslation);
     }
 
     @Bean
@@ -75,4 +80,12 @@ public class BatchConfiguration {
                 .dataSource(dataSource)
                 .build();
     }
+
+    @Bean
+    public JpaItemWriter<RoadAddress> jpaWriter() {
+        JpaItemWriter<RoadAddress> jpaItemWriter = new JpaItemWriter<>();
+        jpaItemWriter.setEntityManagerFactory(emf);
+        return jpaItemWriter;
+    }
+
 }
