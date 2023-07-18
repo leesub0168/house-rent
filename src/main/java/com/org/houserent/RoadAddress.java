@@ -9,12 +9,10 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
-@Entity
 public class RoadAddress {
     private String sigungu_cd;
     private String rd_sn;
     private String bjdong_sn;
-    @Id
     private String rd_nm;
     private String eng_rd_nm;
     private String sido_nm;
