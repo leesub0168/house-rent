@@ -50,7 +50,7 @@ public class BatchConfiguration {
                 .<RoadAddress, RoadAddress>chunk(100, transactionManager)
                 .reader(jsonReader())
                 .processor(processor())
-                .writer(jpaWriter())
+                .writer(writer())
                 .build();
     }
 

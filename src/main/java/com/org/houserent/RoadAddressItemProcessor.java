@@ -16,10 +16,6 @@ public class RoadAddressItemProcessor implements ItemProcessor<RoadAddress, Road
 
     @Override
     public RoadAddress process(RoadAddress roadAddress) throws Exception {
-        String rd_nm = roadAddress.getRd_nm();
-        List<HouseDto> addressInfoList = addressTranslation.getAddressInfoList(rd_nm);
-        System.out.println("################## " + roadAddress.getRd_nm() + " , count =  " + addressInfoList.size());
-
         return roadAddress;
     }
 }
