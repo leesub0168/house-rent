@@ -9,9 +9,11 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
@@ -61,6 +63,16 @@ public class BatchConfiguration {
                 .resource(new ClassPathResource("seoul_road_address.json"))
                 .jsonObjectReader(new JacksonJsonObjectReader<>(RoadAddress.class))
                 .build();
+    }
+
+    @Bean
+    public JpaPagingItemReader<RoadAddress> jpaPagingItemReader() {
+        JpaPagingItemReader<RoadAddress> roadAddressJpaPagingItemReader = new JpaPagingItemReader<RoadAddress>();
+        roadAddressJpaPagingItemReader.setEntityManagerFactory(emf);
+        roadAddressJpaPagingItemReader.setQueryString("select o from road_address");
+        roadAddressJpaPagingItemReader.setPageSize(10);
+
+        return roadAddressJpaPagingItemReader;
     }
 
     @Bean
