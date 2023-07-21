@@ -10,10 +10,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.batch.item.database.*;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
@@ -21,6 +18,7 @@ import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
@@ -50,7 +48,7 @@ public class BatchConfiguration {
     public Step step() {
         return new StepBuilder("step1", jobRepository)
                 .<RoadAddress, RoadAddress>chunk(100, transactionManager)
-                .reader(jsonReader())
+                .reader(jdbcCursorItemReader())
                 .processor(processor())
                 .writer(writer())
                 .build();
@@ -66,13 +64,25 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public JpaPagingItemReader<RoadAddress> jpaPagingItemReader() {
+    public JpaPagingItemReader<RoadAddress> JdbcCursorItemReader() {
         JpaPagingItemReader<RoadAddress> roadAddressJpaPagingItemReader = new JpaPagingItemReader<RoadAddress>();
         roadAddressJpaPagingItemReader.setEntityManagerFactory(emf);
         roadAddressJpaPagingItemReader.setQueryString("select o from road_address");
         roadAddressJpaPagingItemReader.setPageSize(10);
-
         return roadAddressJpaPagingItemReader;
+    }
+
+    @Bean
+    public JdbcCursorItemReader<RoadAddress> jdbcCursorItemReader() {
+        JdbcCursorItemReader<RoadAddress> jdbcCursorItemReader = new JdbcCursorItemReader<>();
+        jdbcCursorItemReader.setDataSource(dataSource);
+        jdbcCursorItemReader.setSql("select distinct A.base_area_num, B.si_gun_gu_name, substr(C.bjd_cd, 1, 5) as sgg_cd, B.dong_name, " +
+                "substr(C.bjd_cd, 6, 10) as bjd_cd, B.road_address_name, A.building_main_num, A.building_sub_num " +
+                "from juso_address_info A " +
+                "inner join juso_road_name_cd B on A.juso_road_name_cd = B.juso_road_name_cd and A.dong_serial_num = B.dong_serial_num " +
+                "inner join juso_land_address_info C on A.control_num = C.control_num");
+        jdbcCursorItemReader.setRowMapper(new RoadAddressRowMapper());
+        return jdbcCursorItemReader;
     }
 
     @Bean
