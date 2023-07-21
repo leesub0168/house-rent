@@ -16,6 +16,7 @@ public class RoadAddressItemProcessor implements ItemProcessor<RoadAddress, Road
 
     @Override
     public RoadAddress process(RoadAddress roadAddress) throws Exception {
+        log.info("################ " + roadAddress);
         return roadAddress;
     }
 }
