@@ -1,5 +1,6 @@
-package com.org.houserent;
+package com.org.houserent.batch;
 
+import com.org.houserent.batch.entity.RoadAddress;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ public class RoadAddressRowMapper implements RowMapper<RoadAddress> {
                 .rd_nm(rs.getString("road_address_name"))
                 .sigungu_nm(rs.getString("si_gun_gu_name"))
                 .bjdong_nm(rs.getString("dong_name"))
-                .sigungu_cd(rs.getString("sgg_cd"))
+//                .sigungu_cd(rs.getString("sgg_cd"))
                 .build();
     }
 }
