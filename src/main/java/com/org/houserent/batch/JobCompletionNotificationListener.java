@@ -1,4 +1,4 @@
-package com.org.houserent;
+package com.org.houserent.batch;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

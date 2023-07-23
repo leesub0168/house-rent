@@ -1,5 +1,7 @@
-package com.org.houserent;
+package com.org.houserent.batch;
 
+import com.org.houserent.batch.entity.RoadAddress;
+import com.org.houserent.batch.entity.juso_address_info;
 import com.org.houserent.util.AddressTranslation;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,6 @@ import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
@@ -47,10 +48,10 @@ public class BatchConfiguration {
     @Bean
     public Step step() {
         return new StepBuilder("step1", jobRepository)
-                .<RoadAddress, RoadAddress>chunk(100, transactionManager)
-                .reader(jdbcCursorItemReader())
-                .processor(processor())
-                .writer(writer())
+                .<juso_address_info, RoadAddress>chunk(100, transactionManager)
+                .reader(jpaPagingItemReader())
+                .processor(jusoItemProcessor())
+                .writer(roadAddressWriter())
                 .build();
     }
 
@@ -64,34 +65,26 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public JpaPagingItemReader<RoadAddress> JdbcCursorItemReader() {
-        JpaPagingItemReader<RoadAddress> roadAddressJpaPagingItemReader = new JpaPagingItemReader<RoadAddress>();
+    public JpaPagingItemReader<juso_address_info> jpaPagingItemReader() {
+        JpaPagingItemReader<juso_address_info> roadAddressJpaPagingItemReader = new JpaPagingItemReader<>();
         roadAddressJpaPagingItemReader.setEntityManagerFactory(emf);
-        roadAddressJpaPagingItemReader.setQueryString("select o from road_address");
-        roadAddressJpaPagingItemReader.setPageSize(10);
+        roadAddressJpaPagingItemReader.setQueryString("select o from juso_address_info o");
+        roadAddressJpaPagingItemReader.setPageSize(1000);
         return roadAddressJpaPagingItemReader;
     }
 
     @Bean
-    public JdbcCursorItemReader<RoadAddress> jdbcCursorItemReader() {
-        JdbcCursorItemReader<RoadAddress> jdbcCursorItemReader = new JdbcCursorItemReader<>();
-        jdbcCursorItemReader.setDataSource(dataSource);
-        jdbcCursorItemReader.setSql("select distinct A.base_area_num, B.si_gun_gu_name, substr(C.bjd_cd, 1, 5) as sgg_cd, B.dong_name, " +
-                "substr(C.bjd_cd, 6, 10) as bjd_cd, B.road_address_name, A.building_main_num, A.building_sub_num " +
-                "from juso_address_info A " +
-                "inner join juso_road_name_cd B on A.juso_road_name_cd = B.juso_road_name_cd and A.dong_serial_num = B.dong_serial_num " +
-                "inner join juso_land_address_info C on A.control_num = C.control_num");
-        jdbcCursorItemReader.setRowMapper(new RoadAddressRowMapper());
-        return jdbcCursorItemReader;
-    }
-
-    @Bean
-    public RoadAddressItemProcessor processor() {
+    public RoadAddressItemProcessor roadProcessor() {
         return new RoadAddressItemProcessor(addressTranslation);
     }
 
     @Bean
-    public JdbcBatchItemWriter<RoadAddress> writer() {
+    public JusoItemProcessor jusoItemProcessor() {
+        return new JusoItemProcessor();
+    }
+
+    @Bean
+    public JdbcBatchItemWriter<RoadAddress> roadAddressWriter() {
         return new JdbcBatchItemWriterBuilder<RoadAddress>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .sql("INSERT INTO house_rent.road_address " +
@@ -104,8 +97,8 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public JpaItemWriter<RoadAddress> jpaWriter() {
-        JpaItemWriter<RoadAddress> jpaItemWriter = new JpaItemWriter<>();
+    public JpaItemWriter<juso_address_info> jpaWriter() {
+        JpaItemWriter<juso_address_info> jpaItemWriter = new JpaItemWriter<>();
         jpaItemWriter.setEntityManagerFactory(emf);
         return jpaItemWriter;
     }

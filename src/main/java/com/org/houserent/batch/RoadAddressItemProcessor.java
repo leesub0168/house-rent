@@ -1,12 +1,10 @@
-package com.org.houserent;
+package com.org.houserent.batch;
 
-import com.org.houserent.service.dto.HouseDto;
+import com.org.houserent.batch.entity.RoadAddress;
 import com.org.houserent.util.AddressTranslation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor

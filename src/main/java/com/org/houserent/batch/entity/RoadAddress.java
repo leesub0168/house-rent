@@ -1,4 +1,4 @@
-package com.org.houserent;
+package com.org.houserent.batch.entity;
 
 import lombok.*;
 

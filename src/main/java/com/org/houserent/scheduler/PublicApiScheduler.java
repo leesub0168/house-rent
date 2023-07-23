@@ -1,6 +1,6 @@
 package com.org.houserent.scheduler;
 
-import com.org.houserent.BatchConfiguration;
+import com.org.houserent.batch.BatchConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobParameters;
