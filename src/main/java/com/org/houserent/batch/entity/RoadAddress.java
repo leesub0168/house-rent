@@ -1,12 +1,17 @@
 package com.org.houserent.batch.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.*;
 
 @Getter
-@Setter
 @ToString
 @NoArgsConstructor
+@Entity
 public class RoadAddress {
+    @Id @GeneratedValue
+    private Long id;
     private String sigungu_cd;
     private String sigungu_nm;
     private String bjdong_cd;
