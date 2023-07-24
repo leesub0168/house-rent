@@ -2,19 +2,20 @@ package com.org.houserent.batch;
 
 import com.org.houserent.batch.entity.RoadAddress;
 import com.org.houserent.batch.entity.juso_address_info;
+import com.org.houserent.domain.House;
 import com.org.houserent.util.AddressTranslation;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.*;
-import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
@@ -52,10 +53,10 @@ public class BatchConfiguration {
     @Bean
     public Step step1() {
         return new StepBuilder("step1", jobRepository)
-                .<RoadAddress, RoadAddress>chunk(100, transactionManager)
+                .<House, House>chunk(1000, transactionManager)
                 .reader(jdbcPagingItemReader())
-                .processor(roadProcessor())
-                .writer(roadAddressWriter())
+                .processor(houseItemProcessor())
+                .writer(houseJpaItemWriter())
                 .build();
     }
 
@@ -79,20 +80,22 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public JdbcPagingItemReader<RoadAddress> jdbcPagingItemReader() {
+    public JdbcPagingItemReader<House> jdbcPagingItemReader() {
         Map<String, Order> sortKeys = new HashMap<>(1);
-        sortKeys.put("control_num", Order.ASCENDING);
+        sortKeys.put("b.control_num", Order.ASCENDING);
 
-        return new JdbcPagingItemReaderBuilder<RoadAddress>()
+        return new JdbcPagingItemReaderBuilder<House>()
                 .name("jdbcPagingItemReader")
                 .dataSource(dataSource)
-                .selectClause("select distinct a.base_area_num, b.si_gun_gu_name, substr(c.bjd_cd, 1, 5) as sigungu_cd, " +
-                        "substr(c.bjd_cd, 6, 10) as bjdong_cd, b.road_address_name as rd_nm, b.dong_name, a.building_main_num, a.building_sub_num, d.building_register_name ")
-                .fromClause("from juso_address_info a " +
-                        "inner join juso_road_name_cd b on a.juso_road_name_cd = b.juso_road_name_cd and a.dong_serial_num = b.dong_serial_num " +
-                        "inner join juso_land_address_info c on a.control_num = c.control_num " +
-                        "inner join juso_additional_info d on a.control_num = d.control_num")
-                .rowMapper(new RoadAddressRowMapper())
+                .selectClause("select a.road_address_name , a.si_do_name , a.si_gun_gu_name, a.dong_name, " +
+                        "b.building_main_num , b.building_sub_num, b.control_num, " +
+                        "substr(c.bjd_cd, 1, 5) as sgg_cd, substr(c.bjd_cd, 6, 10) as bjd_cd, c.land_main_num, c.land_sub_num, c.bjd_dong_name, " +
+                        "d.zipcode, d.si_gun_gu_building_name ")
+                .fromClause("from juso_road_name_cd a " +
+                        "inner join juso_address_info b on a.juso_road_name_cd = b.juso_road_name_cd and a.dong_serial_num = b.dong_serial_num " +
+                        "inner join juso_land_address_info c on c.control_num = b.control_num and c.represent_yn = '1' " +
+                        "inner join juso_additional_info d on d.control_num = c.control_num")
+                .rowMapper(new HouseRowMapper())
                 .pageSize(1000)
                 .sortKeys(sortKeys)
                 .build();
@@ -115,8 +118,20 @@ public class BatchConfiguration {
     }
 
     @Bean
+    public HouseItemProcessor houseItemProcessor() {
+        return new HouseItemProcessor();
+    }
+
+    @Bean
     public JpaItemWriter<RoadAddress> roadAddressWriter() {
         return new JpaItemWriterBuilder<RoadAddress>()
+                .entityManagerFactory(emf)
+                .build();
+    }
+
+    @Bean
+    public JpaItemWriter<House> houseJpaItemWriter() {
+        return new JpaItemWriterBuilder<House>()
                 .entityManagerFactory(emf)
                 .build();
     }
