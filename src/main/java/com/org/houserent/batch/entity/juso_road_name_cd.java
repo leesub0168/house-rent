@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Getter;
 
-@Entity
+//@Entity
 @Getter
 public class juso_road_name_cd {
 
