@@ -12,10 +12,12 @@ public class RoadAddressRowMapper implements RowMapper<RoadAddress> {
     @Override
     public RoadAddress mapRow(ResultSet rs, int rowNum) throws SQLException {
         return RoadAddress.builder()
-                .rd_nm(rs.getString("road_address_name"))
+                .sigungu_cd(rs.getString("sigungu_cd"))
                 .sigungu_nm(rs.getString("si_gun_gu_name"))
-                .bjdong_nm(rs.getString("dong_name"))
-//                .sigungu_cd(rs.getString("sgg_cd"))
+                .bjdong_cd(rs.getString("bjdong_cd"))
+                .building_name(rs.getString("building_register_name"))
+                .building_main_num(rs.getString("building_main_num"))
+                .building_sub_num(rs.getString("building_sub_num"))
                 .build();
     }
 }
