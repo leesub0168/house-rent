@@ -2,17 +2,21 @@ package com.org.houserent.batch.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import lombok.Getter;
 
-//@Entity
+@Entity
 @Getter
+@IdClass(juso_road_name_cd_id.class)
 public class juso_road_name_cd {
 
     @Id
     private String juso_road_name_cd;
+    @Id
+    private String dong_serial_num;
+
     private String road_address_name;
     private String road_address_english_name;
-    private String dong_serial_num;
     private String si_do_name;
     private String si_do_english_name;
     private String si_gun_gu_name;

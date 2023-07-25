@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 
-//@Entity
+@Entity
 @Getter
 public class juso_additional_info {
     @Id
