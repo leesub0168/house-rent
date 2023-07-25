@@ -5,10 +5,15 @@ import lombok.Getter;
 
 @Entity
 @Getter
-@IdClass(juso_land_address_id.class)
-public class juso_land_address_info {
+@IdClass(JusoLandAddressId.class)
+@Table(name = "juso_land_address_info")
+public class JusoLandAddressInfo {
+
     @Id
-    private String control_num;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "control_num")
+    private JusoAddressInfo jusoAddressInfo;
+
     @Id
     private String serial_num;
 

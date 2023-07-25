@@ -1,9 +1,7 @@
 package com.org.houserent.batch;
 
-import com.org.houserent.batch.entity.RoadAddress;
-import com.org.houserent.batch.entity.juso_address_info;
+import com.org.houserent.batch.entity.JusoRoadNameCd;
 import com.org.houserent.domain.House;
-import com.org.houserent.util.AddressTranslation;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -18,12 +16,9 @@ import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
-import org.springframework.batch.item.json.JacksonJsonObjectReader;
-import org.springframework.batch.item.json.JsonItemReader;
-import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
+import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
@@ -37,15 +32,12 @@ public class BatchConfiguration {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
-    private final JobCompletionNotificationListener listener;
     private final EntityManagerFactory emf;
-    private final AddressTranslation addressTranslation;
 
     @Bean
     public Job job() {
         return new JobBuilder("importUserJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .listener(listener)
                 .start(step1())
                 .build();
     }
@@ -55,29 +47,10 @@ public class BatchConfiguration {
         return new StepBuilder("step1", jobRepository)
                 .<House, House>chunk(1000, transactionManager)
                 .reader(jdbcPagingItemReader())
-                .processor(houseItemProcessor())
                 .writer(houseJpaItemWriter())
                 .build();
     }
 
-    @Bean
-    public Step step2() {
-        return new StepBuilder("step2", jobRepository)
-                .<RoadAddress, RoadAddress>chunk(100, transactionManager)
-                .reader(jsonReader())
-                .processor(roadProcessor())
-                .writer(roadAddressWriter())
-                .build();
-    }
-
-    @Bean
-    public JsonItemReader<RoadAddress> jsonReader() {
-        return new JsonItemReaderBuilder<RoadAddress>()
-                .name("roadAddressItemReader")
-                .resource(new ClassPathResource("seoul_road_address.json"))
-                .jsonObjectReader(new JacksonJsonObjectReader<>(RoadAddress.class))
-                .build();
-    }
 
     @Bean
     public JdbcPagingItemReader<House> jdbcPagingItemReader() {
@@ -102,30 +75,12 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public JpaPagingItemReader<juso_address_info> jpaPagingItemReader() {
-        JpaPagingItemReader<juso_address_info> roadAddressJpaPagingItemReader = new JpaPagingItemReader<>();
-        roadAddressJpaPagingItemReader.setEntityManagerFactory(emf);
-        roadAddressJpaPagingItemReader.setQueryString("select a" +
-                "from juso_address_info a " +
-                "join fetch a.control_num");
-        roadAddressJpaPagingItemReader.setPageSize(1000);
-        return roadAddressJpaPagingItemReader;
-    }
-
-    @Bean
-    public RoadAddressItemProcessor roadProcessor() {
-        return new RoadAddressItemProcessor();
-    }
-
-    @Bean
-    public HouseItemProcessor houseItemProcessor() {
-        return new HouseItemProcessor();
-    }
-
-    @Bean
-    public JpaItemWriter<RoadAddress> roadAddressWriter() {
-        return new JpaItemWriterBuilder<RoadAddress>()
+    public JpaPagingItemReader<JusoRoadNameCd> jpaPagingItemReader() {
+        return new JpaPagingItemReaderBuilder<JusoRoadNameCd>()
+                .name("jpaPagingItemReader")
                 .entityManagerFactory(emf)
+                .queryString("select m from JusoRoadNameCd m")
+                .pageSize(1000)
                 .build();
     }
 
@@ -136,11 +91,5 @@ public class BatchConfiguration {
                 .build();
     }
 
-    @Bean
-    public JpaItemWriter<juso_address_info> jpaWriter() {
-        JpaItemWriter<juso_address_info> jpaItemWriter = new JpaItemWriter<>();
-        jpaItemWriter.setEntityManagerFactory(emf);
-        return jpaItemWriter;
-    }
 
 }

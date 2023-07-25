@@ -8,14 +8,13 @@ import java.io.Serializable;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-public class juso_road_name_cd_id implements Serializable {
-
-
-    @EqualsAndHashCode.Include
-    @Id
-    private String juso_road_name_cd;
+public class JusoLandAddressId implements Serializable {
 
     @EqualsAndHashCode.Include
     @Id
-    private String dong_serial_num;
+    private String jusoAddressInfo;
+
+    @EqualsAndHashCode.Include
+    @Id
+    private String serial_num;
 }

@@ -1,20 +1,23 @@
 package com.org.houserent.batch.entity;
 
 import jakarta.persistence.Id;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-public class juso_land_address_id implements Serializable {
+@Getter
+@Setter
+@AllArgsConstructor
+public class JusoRoadNameCdId implements Serializable {
+
 
     @EqualsAndHashCode.Include
     @Id
-    private String control_num;
+    private String juso_road_name_cd;
 
     @EqualsAndHashCode.Include
     @Id
-    private String serial_num;
+    private String dong_serial_num;
 }

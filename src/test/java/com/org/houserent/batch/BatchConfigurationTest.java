@@ -9,7 +9,10 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -23,7 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringJUnitConfig(BatchConfiguration.class)
 @EnableBatchProcessing
 @EnableAutoConfiguration
+@EnableJpaRepositories
 @SpringBootTest
+@EntityScan(basePackages = {"com.org.houserent.domain"})
 class BatchConfigurationTest {
 
     @Autowired
