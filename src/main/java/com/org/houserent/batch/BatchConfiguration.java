@@ -1,7 +1,9 @@
 package com.org.houserent.batch;
 
+import com.org.houserent.HouseRentContractItemProcessor;
 import com.org.houserent.batch.entity.JusoRoadNameCd;
 import com.org.houserent.domain.House;
+import com.org.houserent.domain.HouseRentContract;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -10,6 +12,8 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
@@ -38,19 +42,28 @@ public class BatchConfiguration {
     public Job job() {
         return new JobBuilder("importUserJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(step1())
+                .start(jusoDbTransformToHouse())
                 .build();
     }
 
     @Bean
-    public Step step1() {
-        return new StepBuilder("step1", jobRepository)
+    public Step jusoDbTransformToHouse() {
+        return new StepBuilder("jusoDbTransformToHouse", jobRepository)
                 .<House, House>chunk(1000, transactionManager)
                 .reader(jdbcPagingItemReader())
                 .writer(houseJpaItemWriter())
                 .build();
     }
 
+    @Bean
+    public Step callHouseRentApiUseHouseData() {
+        return new StepBuilder("callHouseRentApiUseHouseData", jobRepository)
+                .<House, HouseRentContract>chunk(1000, transactionManager)
+                .reader(houseJpaPagingItemReader())
+                .processor(houseRentContractProcessor())
+                .writer(houseRentContractJpaItemWriter())
+                .build();
+    }
 
     @Bean
     public JdbcPagingItemReader<House> jdbcPagingItemReader() {
@@ -74,7 +87,7 @@ public class BatchConfiguration {
                 .build();
     }
 
-    @Bean
+    /*@Bean
     public JpaPagingItemReader<JusoRoadNameCd> jpaPagingItemReader() {
         return new JpaPagingItemReaderBuilder<JusoRoadNameCd>()
                 .name("jpaPagingItemReader")
@@ -82,7 +95,7 @@ public class BatchConfiguration {
                 .queryString("select m from JusoRoadNameCd m")
                 .pageSize(1000)
                 .build();
-    }
+    }*/
 
     @Bean
     public JpaItemWriter<House> houseJpaItemWriter() {
@@ -91,5 +104,25 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
+    public JpaPagingItemReader<House> houseJpaPagingItemReader() {
+        return new JpaPagingItemReaderBuilder<House>()
+                .name("houseJpaPagingItemReader")
+                .entityManagerFactory(emf)
+                .queryString("select a from house a")
+                .pageSize(1000)
+                .build();
+    }
 
+    @Bean
+    public ItemProcessor<House, HouseRentContract> houseRentContractProcessor() {
+        return new HouseRentContractItemProcessor();
+    }
+
+    @Bean
+    public JpaItemWriter<HouseRentContract> houseRentContractJpaItemWriter() {
+        return new JpaItemWriterBuilder<HouseRentContract>()
+                .entityManagerFactory(emf)
+                .build();
+    }
 }
