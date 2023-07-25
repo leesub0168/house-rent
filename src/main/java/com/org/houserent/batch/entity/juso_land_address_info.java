@@ -1,18 +1,17 @@
 package com.org.houserent.batch.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 
-//@Entity
+@Entity
 @Getter
+@IdClass(juso_land_address_id.class)
 public class juso_land_address_info {
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    private juso_address_info control_num;
+    private String control_num;
+    @Id
     private String serial_num;
+
     private String bjd_cd;
     private String si_do_name;
     private String si_gun_gu_name;
