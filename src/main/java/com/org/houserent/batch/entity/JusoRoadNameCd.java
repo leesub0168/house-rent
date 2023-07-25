@@ -3,12 +3,16 @@ package com.org.houserent.batch.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.ToString;
 
 @Entity
 @Getter
-@IdClass(juso_road_name_cd_id.class)
-public class juso_road_name_cd {
+@IdClass(JusoRoadNameCdId.class)
+@ToString
+@Table(name = "juso_road_name_cd")
+public class JusoRoadNameCd {
 
     @Id
     private String juso_road_name_cd;

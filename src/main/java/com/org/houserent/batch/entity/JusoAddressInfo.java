@@ -1,18 +1,16 @@
 package com.org.houserent.batch.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class juso_address_info {
+@Table(name = "juso_address_info")
+public class JusoAddressInfo {
     @Id
     private String control_num;
-    private String juso_road_name_cd;
-    private String dong_serial_num;
     private String basement_yn;
     private String building_main_num;
     private String building_sub_num;
@@ -21,4 +19,7 @@ public class juso_address_info {
     private String notification_date;
     private String before_change_road_address;
     private String detail_address_yn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private JusoRoadNameCd JusoRoadNameCd;
 }

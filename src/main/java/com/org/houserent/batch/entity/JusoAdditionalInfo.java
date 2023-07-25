@@ -1,17 +1,15 @@
 package com.org.houserent.batch.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
 @Getter
-public class juso_additional_info {
+@Table(name = "juso_additional_info")
+public class JusoAdditionalInfo {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    private juso_address_info control_num;
+    private JusoAddressInfo JusoAddressInfo;
     private String administrative_dong_cd;
     private String administrative_name;
     private String zipcode;
