@@ -60,10 +60,10 @@ public class BatchConfiguration {
     @Bean
     public Step callHouseRentApiUseHouseData() {
         return new StepBuilder("callHouseRentApiUseHouseData", jobRepository)
-                .<House, List<HouseRentContract>>chunk(1000, transactionManager)
+                .<House, List<HouseRentContract>>chunk(100, transactionManager)
                 .reader(houseJpaPagingItemReader())
                 .processor(houseRentContractProcessor())
-                .writer(houseRentContractJpaItemWriter())
+                .writer(houseRentContractJpaItemListWriter())
                 .build();
     }
 
@@ -112,7 +112,7 @@ public class BatchConfiguration {
                 .name("houseJpaPagingItemReader")
                 .entityManagerFactory(emf)
                 .queryString("select a from House a")
-                .pageSize(1000)
+                .pageSize(100)
                 .build();
     }
 
@@ -122,9 +122,13 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public JpaItemWriter<List<HouseRentContract>> houseRentContractJpaItemWriter() {
-        return new JpaItemWriterBuilder<List<HouseRentContract>>()
-                .entityManagerFactory(emf)
-                .build();
+    public JpaItemListWriter<HouseRentContract> houseRentContractJpaItemListWriter() {
+        JpaItemWriter<HouseRentContract> jpaItemWriter = new JpaItemWriter<>();
+        jpaItemWriter.setEntityManagerFactory(emf);
+
+        JpaItemListWriter<HouseRentContract> jpaItemListWriter = new JpaItemListWriter<>(jpaItemWriter);
+        jpaItemListWriter.setEntityManagerFactory(emf);
+
+        return jpaItemListWriter;
     }
 }
