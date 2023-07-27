@@ -3,9 +3,11 @@ package com.org.houserent.util.publicApi.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.org.houserent.service.dto.HouseDto;
-import com.org.houserent.service.dto.HouseRentContractDto;
-import lombok.*;
+import com.org.houserent.domain.House;
+import com.org.houserent.domain.HouseRentContract;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -30,13 +32,13 @@ public class HouseRentApiDataDto extends SeoulResponseBaseDto {
     private String BEFORE_GRNTY_AMOUNT;     // 종전 보증금
     private String BEFORE_MT_RENT_CHRGE;    // 종전 임대료
 
-    public HouseRentContractDto toHouseRentContractDto(HouseDto houseDto) {
-        return HouseRentContractDto.builder()
+    public HouseRentContract toHouseRentContract(House house) {
+        return HouseRentContract.builder()
                 .deposit(getRENT_GTN())
                 .rent_type(getRENT_GBN())
                 .rent_area(getRENT_AREA())
                 .rent_contract_date(dealYmdToLocalDateTime())
-                .houseDto(houseDto)
+                .house(house)
                 .build();
     }
 

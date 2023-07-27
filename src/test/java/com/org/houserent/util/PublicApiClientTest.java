@@ -1,6 +1,7 @@
 package com.org.houserent.util;
 
 import com.org.houserent.domain.House;
+import com.org.houserent.domain.HouseRentContract;
 import com.org.houserent.exception.NonExistDataException;
 import com.org.houserent.repository.HouseRepository;
 import com.org.houserent.service.dto.HouseRentContractDto;
@@ -99,15 +100,15 @@ class PublicApiClientTest {
         //given
         String searchAddress = "방이동 48-2";
         boolean isRoadAddress = false;
-//        House house = makeHouse2();
-//        houseRepository.save(house);
+        House house = makeHouse2();
+        houseRepository.save(house);
 
         //when
-        List<HouseRentContractDto> houseRentContractInfo = publicApiClient.getHouseRentContractInfo(searchAddress, isRoadAddress);
+        List<HouseRentContract> houseRentContractInfo = publicApiClient.getHouseRentContractInfo(house);
 
         //then
-        for (HouseRentContractDto houseRentContractDto : houseRentContractInfo) {
-            System.out.println(houseRentContractDto);
+        for (HouseRentContract houseRentContract : houseRentContractInfo) {
+            System.out.println(houseRentContract);
         }
 
     }
