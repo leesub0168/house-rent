@@ -1,9 +1,9 @@
 package com.org.houserent.batch;
 
 import com.org.houserent.HouseRentContractItemProcessor;
-import com.org.houserent.batch.entity.JusoRoadNameCd;
 import com.org.houserent.domain.House;
 import com.org.houserent.domain.HouseRentContract;
+import com.org.houserent.util.PublicApiClient;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -13,7 +13,6 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
@@ -27,6 +26,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -37,12 +37,14 @@ public class BatchConfiguration {
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
     private final EntityManagerFactory emf;
+    private final PublicApiClient publicApiClient;
 
     @Bean
     public Job job() {
         return new JobBuilder("importUserJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(jusoDbTransformToHouse())
+                .next(callHouseRentApiUseHouseData())
                 .build();
     }
 
@@ -58,7 +60,7 @@ public class BatchConfiguration {
     @Bean
     public Step callHouseRentApiUseHouseData() {
         return new StepBuilder("callHouseRentApiUseHouseData", jobRepository)
-                .<House, HouseRentContract>chunk(1000, transactionManager)
+                .<House, List<HouseRentContract>>chunk(1000, transactionManager)
                 .reader(houseJpaPagingItemReader())
                 .processor(houseRentContractProcessor())
                 .writer(houseRentContractJpaItemWriter())
@@ -109,19 +111,19 @@ public class BatchConfiguration {
         return new JpaPagingItemReaderBuilder<House>()
                 .name("houseJpaPagingItemReader")
                 .entityManagerFactory(emf)
-                .queryString("select a from house a")
+                .queryString("select a from House a")
                 .pageSize(1000)
                 .build();
     }
 
     @Bean
-    public ItemProcessor<House, HouseRentContract> houseRentContractProcessor() {
-        return new HouseRentContractItemProcessor();
+    public ItemProcessor<House, List<HouseRentContract>> houseRentContractProcessor() {
+        return new HouseRentContractItemProcessor(publicApiClient);
     }
 
     @Bean
-    public JpaItemWriter<HouseRentContract> houseRentContractJpaItemWriter() {
-        return new JpaItemWriterBuilder<HouseRentContract>()
+    public JpaItemWriter<List<HouseRentContract>> houseRentContractJpaItemWriter() {
+        return new JpaItemWriterBuilder<List<HouseRentContract>>()
                 .entityManagerFactory(emf)
                 .build();
     }
