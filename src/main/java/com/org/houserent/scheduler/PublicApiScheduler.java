@@ -1,6 +1,7 @@
 package com.org.houserent.scheduler;
 
-import com.org.houserent.batch.BatchConfiguration;
+import com.org.houserent.batch.JusoDbBatchConfiguration;
+import com.org.houserent.batch.PublicApiConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobParameters;
@@ -18,14 +19,17 @@ import org.springframework.stereotype.Component;
 public class PublicApiScheduler {
 
     private final JobLauncher jobLauncher;
-    private final BatchConfiguration batchConfiguration;
+    private final JusoDbBatchConfiguration jusoDbBatchConfiguration;
+    private final PublicApiConfiguration publicApiConfiguration;
 
     @Scheduled(fixedDelay = 60 * 1000)
     public void callHouseRentApi() {
         log.info("################# scheduler start #####################");
         JobParameters jobParameters = new JobParameters();
         try {
-            jobLauncher.run(batchConfiguration.job(), jobParameters);
+            jobLauncher.run(jusoDbBatchConfiguration.jusoDbTransformJob(), jobParameters);
+            jobLauncher.run(publicApiConfiguration.callHouseRentApiJob(), jobParameters);
+            jobLauncher.run(publicApiConfiguration.callHouseSaleApiJob(), jobParameters);
         } catch (JobInstanceAlreadyCompleteException | JobExecutionAlreadyRunningException | JobParametersInvalidException | JobRestartException e) {
             log.error(e.getMessage());
         }

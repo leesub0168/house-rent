@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -23,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBatchTest
-@SpringJUnitConfig(BatchConfiguration.class)
+@SpringJUnitConfig(JusoDbBatchConfiguration.class)
 @EnableBatchProcessing
 @EnableAutoConfiguration
 @EnableJpaRepositories
 @SpringBootTest
 @EntityScan(basePackages = {"com.org.houserent.domain"})
-class BatchConfigurationTest {
+class JusoDbBatchConfigurationTest {
 
     @Autowired
     JobLauncherTestUtils jobLauncherTestUtils;
