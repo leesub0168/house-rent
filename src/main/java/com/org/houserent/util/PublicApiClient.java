@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.houserent.domain.House;
 import com.org.houserent.domain.HouseRentContract;
+import com.org.houserent.domain.HouseSaleContract;
 import com.org.houserent.exception.NonExistDataException;
 import com.org.houserent.exception.NonExistHouseException;
 import com.org.houserent.service.HouseService;
@@ -63,38 +64,33 @@ public class PublicApiClient {
      * http://openapi.seoul.go.kr:8088/인증키/요청파일_타입/서비스명/요청시작위치/요청종료위치 +
      *      /접수연도/자치구코드/자치구명/법정동코드/지번구분/지번구분명/본번/부번/건물명/계약일/건물용도
      * */
-    public List<HouseSaleContractDto> getHouseSaleContractInfo(String searchAddress, String year, boolean isRoadAddress) {
-        Optional<HouseDto> houseDto;
-        if(isRoadAddress) houseDto = houseService.findHouseByRoadAddress(searchAddress);
-        else houseDto = houseService.findHouseByLandAddress(searchAddress);
-
-        houseDto.orElseThrow(() -> new NonExistHouseException("주소 정보가 존재하지 않습니다."));
+    public List<HouseSaleContract> getHouseSaleContractInfo(House house) {
+        List<HouseSaleContract> houseSaleContracts = new ArrayList<>();
 
         URI uri = makeUri(
                 key, resultType, sale,
                 start_index, end_index,
-                year, houseDto.get().getSgg_cd(),
-                houseDto.get().getSgg_nm(), houseDto.get().getBjdong_cd(),
-                "{land_gbn}", "{land_gbn_nm}", String.format("%04d", houseDto.get().getLand_main_num()),
-                String.format("%04d", houseDto.get().getLand_sub_num())
+                getCurrentYear(), house.getSgg_cd(),
+                house.getSgg_nm(), house.getBjdong_cd(),
+                "{land_gbn}", "{land_gbn_nm}", String.format("%04d", house.getLand_main_num()),
+                String.format("%04d", house.getLand_sub_num())
         );
         String str = callApiAcceptJson(uri);
 
-        if(str.indexOf(sale) < 0) throw new NonExistDataException("해당하는 데이터가 존재하지 않습니다.");
+        if(str.indexOf(sale) >= 0) {
+            try {
+                HouseSaleApiMainDto houseSaleApiMainDto = jsonStringToObject(str, HouseSaleApiMainDto.class);
+                houseSaleContracts = houseSaleApiMainDto.getTbLnOpendataRtmsV().getRow()
+                        .stream()
+                        .filter(o -> checkHouseInfoForSale(house, o))
+                        .map(o -> o.toHouseSaleContract(house))
+                        .collect(Collectors.toList());
 
-        List<HouseSaleContractDto> houseSaleContractDtoList = new ArrayList<>();
-        try {
-            HouseSaleApiMainDto houseSaleApiMainDto = jsonStringToObject(str, HouseSaleApiMainDto.class);
-            houseSaleContractDtoList = houseSaleApiMainDto.getTbLnOpendataRtmsV().getRow()
-                    .stream()
-                    .filter(o -> checkHouseInfo(houseDto.get(), o))
-                    .map(o -> o.toHouseSaleContractDto(houseDto.get()))
-                    .collect(Collectors.toList());
-
-        } catch (JsonProcessingException jpe) {
-            jpe.printStackTrace();
+            } catch (JsonProcessingException jpe) {
+                jpe.printStackTrace();
+            }
         }
-        return houseSaleContractDtoList;
+        return houseSaleContracts;
     }
 
     /**
@@ -130,11 +126,11 @@ public class PublicApiClient {
         return houseRentContracts;
     }
 
-    public boolean checkHouseInfo(HouseDto houseDto, HouseSaleApiDataDto houseSaleApiDataDto) {
-        return Objects.equals(houseDto.getBjdong_cd(), houseSaleApiDataDto.getBJDONG_CD())
-                && Objects.equals(houseDto.getSgg_cd(), houseSaleApiDataDto.getSGG_CD())
-                && Objects.equals(String.format("%04d", houseDto.getLand_main_num()), houseSaleApiDataDto.getBONBEON())
-                && Objects.equals(String.format("%04d", houseDto.getLand_sub_num()), houseSaleApiDataDto.getBUBEON());
+    public boolean checkHouseInfoForSale(House house, HouseSaleApiDataDto houseSaleApiDataDto) {
+        return Objects.equals(house.getBjdong_cd(), houseSaleApiDataDto.getBJDONG_CD())
+                && Objects.equals(house.getSgg_cd(), houseSaleApiDataDto.getSGG_CD())
+                && Objects.equals(String.format("%04d", house.getLand_main_num()), houseSaleApiDataDto.getBONBEON())
+                && Objects.equals(String.format("%04d", house.getLand_sub_num()), houseSaleApiDataDto.getBUBEON());
     }
 
     public boolean checkHouseInfoForRent(House house, HouseRentApiDataDto houseRentApiDataDto) {
