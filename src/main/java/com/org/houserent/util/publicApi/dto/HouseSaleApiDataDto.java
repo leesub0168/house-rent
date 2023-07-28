@@ -3,8 +3,8 @@ package com.org.houserent.util.publicApi.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.org.houserent.service.dto.HouseDto;
-import com.org.houserent.service.dto.HouseSaleContractDto;
+import com.org.houserent.domain.House;
+import com.org.houserent.domain.HouseSaleContract;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -30,8 +30,8 @@ public class HouseSaleApiDataDto extends SeoulResponseBaseDto {
     private String REQ_GBN;
     private String RDEALER_LAWDNM;
 
-    public HouseSaleContractDto toHouseSaleContractDto(HouseDto houseDto) {
-        return HouseSaleContractDto.builder()
+    public HouseSaleContract toHouseSaleContract(House house) {
+        return HouseSaleContract.builder()
                 .sale_contract_date(dealYmdToLocalDateTime())
                 .floor(getFLOOR())
                 .sale_price(Integer.parseInt(getOBJ_AMT()))
@@ -40,7 +40,7 @@ public class HouseSaleApiDataDto extends SeoulResponseBaseDto {
                 .right_gbn(getRIGHT_GBN())
                 .declare_type(getREQ_GBN())
                 .declare_estate_agent_address(getRDEALER_LAWDNM())
-                .houseDto(houseDto)
+                .house(house)
                 .build();
     }
 
