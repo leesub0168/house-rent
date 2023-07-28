@@ -1,4 +1,4 @@
-package com.org.houserent;
+package com.org.houserent.batch;
 
 import com.org.houserent.domain.House;
 import com.org.houserent.domain.HouseRentContract;

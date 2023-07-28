@@ -2,6 +2,7 @@ package com.org.houserent.util;
 
 import com.org.houserent.domain.House;
 import com.org.houserent.domain.HouseRentContract;
+import com.org.houserent.domain.HouseSaleContract;
 import com.org.houserent.exception.NonExistDataException;
 import com.org.houserent.repository.HouseRepository;
 import com.org.houserent.service.dto.HouseRentContractDto;
@@ -69,37 +70,31 @@ class PublicApiClientTest {
     @Test
     public void 부동산_매매_실거래가_조회_실패() throws Exception {
         //given
-        String searchAddress = "방화대로7가길 35";
-        boolean isRoadAddress = true;
         House house = makeHouse();
         houseRepository.save(house);
 
         //then
-        assertThrows(NonExistDataException.class, () -> publicApiClient.getHouseSaleContractInfo(searchAddress, "2023", isRoadAddress));
+        assertEquals(0, publicApiClient.getHouseSaleContractInfo(house).size());
     }
 
     @Test
     public void 부동산_매매_실거래가_조회_성공() throws Exception {
         //given
-        String searchAddress = "방화대로7가길 35";
-        boolean isRoadAddress = true;
         House house = makeHouse();
         houseRepository.save(house);
 
         //when
-        List<HouseSaleContractDto> houseSaleContractInfo = publicApiClient.getHouseSaleContractInfo(searchAddress, "2022", isRoadAddress);
+        List<HouseSaleContract> houseSaleContractInfo = publicApiClient.getHouseSaleContractInfo(house);
 
         //then
-        for (HouseSaleContractDto houseSaleContractDto : houseSaleContractInfo) {
-            System.out.println(houseSaleContractDto);
+        for (HouseSaleContract houseSaleContract : houseSaleContractInfo) {
+            System.out.println(houseSaleContract);
         }
     }
     
     @Test
     public void 부동산_전월세_실거래가_조회() throws Exception {
         //given
-        String searchAddress = "방이동 48-2";
-        boolean isRoadAddress = false;
         House house = makeHouse2();
         houseRepository.save(house);
 
