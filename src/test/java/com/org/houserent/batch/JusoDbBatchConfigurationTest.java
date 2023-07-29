@@ -1,52 +1,53 @@
 package com.org.houserent.batch;
 
+import com.org.houserent.domain.House;
+import com.org.houserent.repository.HouseRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-
-import javax.sql.DataSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBatchTest
-@SpringJUnitConfig(JusoDbBatchConfiguration.class)
-@EnableBatchProcessing
-@EnableAutoConfiguration
-@EnableJpaRepositories
 @SpringBootTest
-@EntityScan(basePackages = {"com.org.houserent.domain"})
 class JusoDbBatchConfigurationTest {
 
     @Autowired
     JobLauncherTestUtils jobLauncherTestUtils;
 
-    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    HouseRepository houseRepository;
 
     @Autowired
-    public void setDataSource(@Autowired DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    JpaPagingItemReader<House> reader;
 
     @Test
-    public void testJob(@Autowired Job job) throws Exception {
-        this.jobLauncherTestUtils.setJob(job);
+    public void reader_테스트() throws Exception {
+        House house = House.builder()
+                .sgg_cd("11110")
+                .sgg_nm("종로구")
+                .bjdong_cd("10100")
+                .city("서울특별시")
+                .gu("종로구")
+                .detail_address("청운벽산빌리지")
+                .zipcode("03046")
+                .build();
 
-        JobExecution jobExecution = jobLauncherTestUtils.launchJob();
+        houseRepository.save(house);
 
-        assertEquals("COMPLETED", jobExecution.getExitStatus().getExitCode());
+        reader.open(new ExecutionContext());
+
+        assertEquals("청운벽산빌리지", reader.read().getDetail_address());
+
     }
 
 }
