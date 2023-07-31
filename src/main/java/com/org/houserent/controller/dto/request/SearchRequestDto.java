@@ -6,5 +6,5 @@ import lombok.Getter;
 public class SearchRequestDto {
     private String userId;
     private String searchAddress;
-    private boolean isRoadAddress;
+    private boolean roadAddressYn;
 }

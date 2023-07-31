@@ -1,52 +1,105 @@
 package com.org.houserent.batch;
 
+import com.org.houserent.domain.House;
+import com.org.houserent.repository.HouseRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.item.Chunk;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
+import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBatchTest
-@SpringJUnitConfig(JusoDbBatchConfiguration.class)
-@EnableBatchProcessing
-@EnableAutoConfiguration
-@EnableJpaRepositories
-@SpringBootTest
-@EntityScan(basePackages = {"com.org.houserent.domain"})
+@SpringBootTest(classes = {
+        JusoDbBatchConfiguration.class,
+        House.class,
+        HouseRepository.class,
+        TestBatchConfig.class})
 class JusoDbBatchConfigurationTest {
 
     @Autowired
     JobLauncherTestUtils jobLauncherTestUtils;
 
-    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    HouseRepository houseRepository;
 
     @Autowired
-    public void setDataSource(@Autowired DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    JpaItemWriter<House> writer;
+
+    @Autowired
+    EntityManagerFactory emf;
+
+    @Test
+    public void reader_테스트() throws Exception {
+        House house = House.builder()
+                .sgg_cd("11110")
+                .sgg_nm("종로구")
+                .bjdong_cd("10100")
+                .city("서울특별시")
+                .gu("종로구")
+                .detail_address("리더테스트네임")
+                .zipcode("03046")
+                .build();
+
+        houseRepository.save(house);
+
+        JpaPagingItemReader<House> reader = new JpaPagingItemReaderBuilder<House>()
+                .name("jpaPagingItemReader")
+                .entityManagerFactory(emf)
+                .queryString("select h from House h")
+                .pageSize(100)
+                .build();
+
+        reader.open(new ExecutionContext());
+
+        assertEquals("리더테스트네임", reader.read().getDetail_address());
+
     }
 
     @Test
-    public void testJob(@Autowired Job job) throws Exception {
-        this.jobLauncherTestUtils.setJob(job);
+    @Transactional
+    public void writer_테스트() throws Exception {
+        //given
+        House house = House.builder()
+                .sgg_cd("11110")
+                .sgg_nm("종로구")
+                .bjdong_cd("10100")
+                .city("서울특별시")
+                .gu("종로구")
+                .detail_address("인텔빌라")
+                .zipcode("03046")
+                .build();
 
-        JobExecution jobExecution = jobLauncherTestUtils.launchJob();
+        //when
+        Chunk<House> houseChunk = new Chunk<House>();
+        houseChunk.add(house);
 
-        assertEquals("COMPLETED", jobExecution.getExitStatus().getExitCode());
+        writer.setEntityManagerFactory(emf);
+        writer.write(houseChunk);
+
+        List<House> all = houseRepository.findAll();
+        //then
+
+        assertEquals(1, all.size());
     }
 
 }
