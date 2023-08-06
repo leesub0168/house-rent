@@ -1,22 +1,29 @@
 package com.org.houserent.service;
 
 import com.org.houserent.controller.dto.request.SearchRequestDto;
+import com.org.houserent.controller.dto.response.SearchHouseRentResponseDto;
 import com.org.houserent.controller.dto.response.SearchHouseResponseDto;
+import com.org.houserent.controller.dto.response.SearchHouseSaleResponseDto;
 import com.org.houserent.controller.dto.response.SearchResponseDto;
 import com.org.houserent.exception.NonExistHouseException;
 import com.org.houserent.service.dto.HouseDto;
+import com.org.houserent.service.dto.HouseRentContractDto;
+import com.org.houserent.service.dto.HouseSaleContractDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SearchService {
-    private final MemberService memberService;
     private final HouseService houseService;
+    private final HouseRentContractService houseRentContractService;
+    private final HouseSaleContractService houseSaleContractService;
 
     public SearchResponseDto searchAddress(SearchRequestDto searchRequestDto) {
         Optional<HouseDto> houseDto;
@@ -30,6 +37,17 @@ public class SearchService {
 
         SearchResponseDto searchResponseDto = new SearchResponseDto();
         searchResponseDto.setHouse(new SearchHouseResponseDto(houseDto.get()));
+
+        List<HouseSaleContractDto> houseSaleContractDtoList = houseSaleContractService.findHouseSaleContractByHouse(houseDto.get());
+        List<HouseRentContractDto> houseRentContractDtoList = houseRentContractService.findHouseRentContractByHouse(houseDto.get());
+
+        searchResponseDto.setHouseRentList(houseRentContractDtoList.stream()
+                .map(SearchHouseRentResponseDto::new)
+                .collect(Collectors.toList()));
+
+        searchResponseDto.setHouseSaleList(houseSaleContractDtoList.stream()
+                .map(SearchHouseSaleResponseDto::new)
+                .collect(Collectors.toList()));
 
         return searchResponseDto;
     }
