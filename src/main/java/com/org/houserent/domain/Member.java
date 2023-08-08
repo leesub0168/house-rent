@@ -26,6 +26,7 @@ public class Member {
     private String email;
     private LocalDateTime joinDate;
     private LocalDateTime withdrawDate;
+    private LocalDateTime lastLoginDate;
 
     @Builder
     public Member(String userId, String password, String name, String email, LocalDateTime joinDate) {
@@ -47,5 +48,9 @@ public class Member {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateLoginDate() {
+        this.lastLoginDate = LocalDateTime.now();
     }
 }

@@ -75,4 +75,13 @@ public class MemberController {
                 .message("탈퇴처리 되었습니다.")
                 .build();
     }
+
+
+    @PostMapping("/logout")
+    public ResponseDto logOut(@RequestBody MemberRequestDto memberRequestDto) {
+        return ResponseDto.builder()
+                .status(HttpStatus.OK)
+                .message("로그아웃 되었습니다.")
+                .build();
+    }
 }
