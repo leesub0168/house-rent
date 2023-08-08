@@ -49,6 +49,8 @@ public class MemberService {
 
         validatePassword(password, member.getPassword());
 
+        updateLoginDate(member);
+
         return MemberDto.builder()
                 .name(member.getName())
                 .email(member.getEmail())
@@ -127,5 +129,10 @@ public class MemberService {
         return memberRepository.findByUserIdAndWithdrawDateIsNull(userId)
                 .map(MemberDto::new)
                 .orElseThrow(() -> new NonExistMemberException("존재하지 않는 회원입니다"));
+    }
+
+    @Transactional
+    public void updateLoginDate(Member member) {
+        member.updateLoginDate();
     }
 }
