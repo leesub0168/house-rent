@@ -17,7 +17,8 @@ public class SearchController {
 
     @PostMapping
     public ResponseDto searchHouse(@RequestBody SearchRequestDto searchRequestDto) {
-        SearchResponseDto searchResponseDto = searchService.searchAddress(searchRequestDto);
+        SearchResponseDto searchResponseDto = searchService.searchAddress(searchRequestDto.getUserId(),
+                searchRequestDto.getSearchAddress(), searchRequestDto.isRoadAddressYn());
         return ResponseDto.builder()
                 .status(HttpStatus.OK)
                 .data(searchResponseDto)

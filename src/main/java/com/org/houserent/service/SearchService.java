@@ -1,6 +1,5 @@
 package com.org.houserent.service;
 
-import com.org.houserent.controller.dto.request.SearchRequestDto;
 import com.org.houserent.controller.dto.response.SearchHouseRentResponseDto;
 import com.org.houserent.controller.dto.response.SearchHouseResponseDto;
 import com.org.houserent.controller.dto.response.SearchHouseSaleResponseDto;
@@ -25,12 +24,12 @@ public class SearchService {
     private final HouseRentContractService houseRentContractService;
     private final HouseSaleContractService houseSaleContractService;
 
-    public SearchResponseDto searchAddress(SearchRequestDto searchRequestDto) {
+    public SearchResponseDto searchAddress(String userId, String searchAddress, boolean roadAddressYn) {
         Optional<HouseDto> houseDto;
-        if(searchRequestDto.isRoadAddressYn()) {
-            houseDto = houseService.findHouseByRoadAddress(searchRequestDto.getSearchAddress());
+        if(roadAddressYn) {
+            houseDto = houseService.findHouseByRoadAddress(searchAddress);
         } else {
-            houseDto = houseService.findHouseByLandAddress(searchRequestDto.getSearchAddress());
+            houseDto = houseService.findHouseByLandAddress(searchAddress);
         }
 
         houseDto.orElseThrow(() -> new NonExistHouseException("주소 정보를 찾을 수 없습니다."));
