@@ -1,6 +1,5 @@
 package com.org.houserent.service;
 
-import com.org.houserent.domain.House;
 import com.org.houserent.exception.NonExistHouseException;
 import com.org.houserent.repository.HouseRepository;
 import com.org.houserent.service.dto.HouseDto;

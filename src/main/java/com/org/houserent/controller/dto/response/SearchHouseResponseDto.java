@@ -1,5 +1,6 @@
 package com.org.houserent.controller.dto.response;
 
+import com.org.houserent.domain.House;
 import com.org.houserent.service.dto.HouseDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,15 +33,15 @@ public class SearchHouseResponseDto {
         this.zipcode = zipcode;
     }
 
-    public SearchHouseResponseDto(HouseDto houseDto) {
-        this.city = houseDto.getCity();
-        this.gu = houseDto.getGu();
-        this.road_name = houseDto.getRoad_name();
-        this.building_main_num = houseDto.getBuilding_main_num();
-        this.building_sub_num = houseDto.getBuilding_sub_num();
-        this.dong = houseDto.getDong();
-        this.land_main_num = houseDto.getLand_main_num();
-        this.land_sub_num = houseDto.getLand_sub_num();
-        this.zipcode = houseDto.getZipcode();
+    public SearchHouseResponseDto(House house) {
+        this.city = house.getCity();
+        this.gu = house.getGu();
+        this.road_name = house.getRoad_name();
+        this.building_main_num = house.getBuilding_main_num();
+        this.building_sub_num = house.getBuilding_sub_num();
+        this.dong = house.getDong();
+        this.land_main_num = house.getLand_main_num();
+        this.land_sub_num = house.getLand_sub_num();
+        this.zipcode = house.getZipcode();
     }
 }
