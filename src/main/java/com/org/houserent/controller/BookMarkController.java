@@ -1,5 +1,6 @@
 package com.org.houserent.controller;
 
+import com.org.houserent.controller.dto.request.BookMarkRequestDto;
 import com.org.houserent.controller.dto.response.BookMarkResponseDto;
 import com.org.houserent.controller.dto.response.ResponseDto;
 import com.org.houserent.service.BookMarkService;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public class BookMarkController {
     @GetMapping("/bookMarkList")
     public ResponseDto bookMarkList(@Param("memberId") Long memberId) {
         List<BookMarkDto> bookMarkDtoList = bookMarkService.bookMarkList(memberId);
+
         return ResponseDto.builder()
                 .status(HttpStatus.OK)
                 .data(new BookMarkResponseDto(bookMarkDtoList))
@@ -28,7 +31,10 @@ public class BookMarkController {
     }
 
     @PostMapping("/addBookMark")
-    public ResponseDto addBookMark() {
+    public ResponseDto addBookMark(@RequestBody BookMarkRequestDto bookMarkRequestDto) {
+        bookMarkService.addBookMark(bookMarkRequestDto.getHouseId(),
+                bookMarkRequestDto.getMemberId());
+
         return ResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message("추가되었습니다")
@@ -36,7 +42,9 @@ public class BookMarkController {
     }
 
     @PostMapping("/deleteBookMark")
-    public ResponseDto deleteBookMark() {
+    public ResponseDto deleteBookMark(@RequestBody BookMarkRequestDto bookMarkRequestDto) {
+        bookMarkService.deleteBookMark(bookMarkRequestDto.getBookMarkId());
+
         return ResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message("삭제되었습니다.")

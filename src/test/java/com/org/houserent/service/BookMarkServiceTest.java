@@ -1,27 +1,28 @@
 package com.org.houserent.service;
 
-import com.org.houserent.domain.BookMark;
 import com.org.houserent.domain.House;
 import com.org.houserent.domain.Member;
-import com.org.houserent.repository.BookMarkRepository;
 import com.org.houserent.repository.HouseRepository;
 import com.org.houserent.repository.MemberRepository;
+import com.org.houserent.service.dto.BookMarkDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
 class BookMarkServiceTest {
 
     @Autowired
-    BookMarkRepository bookMarkRepository;
+    HouseRepository houseRepository;
 
     @Autowired
-    HouseRepository houseRepository;
+    BookMarkService bookMarkService;
 
     @Autowired
     MemberRepository memberRepository;
@@ -63,13 +64,48 @@ class BookMarkServiceTest {
         houseRepository.save(house);
 
 
-        BookMark bookMark = BookMark.builder()
-                .member(member)
-                .house(house)
-                .build();
+        bookMarkService.addBookMark(house.getId(), member.getId());
 
-        BookMark save = bookMarkRepository.save(bookMark);
+        List<BookMarkDto> bookMarkDtos = bookMarkService.bookMarkList(member.getId());
 
-        assertNotNull(save);
+        assertEquals(1, bookMarkDtos.size());
+
+    }
+
+
+    @Test
+    public void 북마크_등록() throws Exception {
+        //given
+        Member member = getMember();
+        memberRepository.save(member);
+
+        House house = getHouse();
+        houseRepository.save(house);
+
+        //when
+        bookMarkService.addBookMark(house.getId(), member.getId());
+
+        //then
+    }
+
+    @Test
+    public void 북마크_삭제() throws Exception {
+        //given
+        Member member = getMember();
+        memberRepository.save(member);
+
+        House house = getHouse();
+        houseRepository.save(house);
+
+        //when
+        Long bookMarkId = bookMarkService.addBookMark(house.getId(), member.getId());
+
+        //when
+        bookMarkService.deleteBookMark(bookMarkId);
+
+        List<BookMarkDto> bookMarkDtos = bookMarkService.bookMarkList(member.getId());
+
+        //then
+        assertEquals(0, bookMarkDtos.size());
     }
 }

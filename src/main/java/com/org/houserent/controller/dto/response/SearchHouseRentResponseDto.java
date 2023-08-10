@@ -1,5 +1,6 @@
 package com.org.houserent.controller.dto.response;
 
+import com.org.houserent.domain.HouseRentContract;
 import com.org.houserent.service.dto.HouseRentContractDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,11 +25,11 @@ public class SearchHouseRentResponseDto {
         this.rent_fee = rent_fee;
     }
 
-    public SearchHouseRentResponseDto(HouseRentContractDto houseRentContractDto) {
-        this.rent_contract_date = houseRentContractDto.getRent_contract_date();
-        this.rent_type = houseRentContractDto.getRent_type();
-        this.rent_area = houseRentContractDto.getRent_area();
-        this.deposit = houseRentContractDto.getDeposit();
-        this.rent_fee = houseRentContractDto.getRent_fee();
+    public SearchHouseRentResponseDto(HouseRentContract houseRentContract) {
+        this.rent_contract_date = houseRentContract.getRent_contract_date();
+        this.rent_type = houseRentContract.getRent_type();
+        this.rent_area = houseRentContract.getRent_area();
+        this.deposit = houseRentContract.getDeposit();
+        this.rent_fee = houseRentContract.getRent_fee();
     }
 }
