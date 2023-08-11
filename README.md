@@ -9,11 +9,14 @@
   - 집 주소 즐겨찾기
 - 검색
   - 집 주소 검색
-  - 해당 주소의 최근 전월세 가격 조회 
+    - 도로명 주소 검색
+    - 지번 주소 검색   
+  - 해당 주소의 최근 전월세 거래 내역 조회
+  - 해당 주소의 최근 실 거래 내역 조회
 - 공공 데이터 API 연계
   - 서울시 부동산 전월세가 정보 (http://data.seoul.go.kr/dataList/OA-21276/S/1/datasetView.do)
   - 서울시 부동산 실거래가 정보 (http://data.seoul.go.kr/dataList/OA-21275/S/1/datasetView.do)
-  - 주소 정보 검색 API (https://business.juso.go.kr/addrlink/main.do?cPath=99MM)
+  - 주소 정보 DB 사용 (https://https://business.juso.go.kr/addrlink/attrbDBDwld/attrbDBDwldList.do?cPath=99MD&menu=%EC%A3%BC%EC%86%8CDB)
 - 기타
   - 전세가율 계산
 - 검토중
@@ -22,8 +25,9 @@
 ![](화면스텝.png)
 ![](화면스텝2.png)
 ## 사용 기술
-- Java
-- Spring Boot
+- Java 17
+- Spring Boot 3.1.0
+- Spring Batch
 - JPA
 - MySQL
 - Spring Data JPA
