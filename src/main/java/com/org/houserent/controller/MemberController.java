@@ -1,10 +1,10 @@
 package com.org.houserent.controller;
 
 import com.org.houserent.controller.dto.request.MemberRequestDto;
-import com.org.houserent.controller.dto.response.MemberResponseDto;
+import com.org.houserent.controller.dto.response.MemberLoginDto;
 import com.org.houserent.controller.dto.response.ResponseDto;
-import com.org.houserent.service.dto.MemberDto;
 import com.org.houserent.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    public static final String MEMBER_ID = "MEMBER_ID";
 
     @PostMapping("/join")
     public ResponseDto join(@RequestBody MemberRequestDto memberRequestDto) {
@@ -29,13 +30,13 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseDto login(@RequestBody MemberRequestDto memberRequestDto) {
-        MemberDto memberDto = memberService.login(memberRequestDto.getUser_id(), memberRequestDto.getPassword());
-        MemberResponseDto memberResponseDto = new MemberResponseDto(memberDto.getName(), memberDto.getEmail());
+    public ResponseDto login(@RequestBody MemberRequestDto memberRequestDto, HttpSession session) {
+        MemberLoginDto memberLoginDto = memberService.login(memberRequestDto.getUser_id(), memberRequestDto.getPassword());
+        session.setAttribute(MEMBER_ID, memberLoginDto.getId());
         return ResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message("로그인 되었습니다.")
-                .data(memberResponseDto)
+                .data(memberLoginDto)
                 .build();
     }
 
@@ -78,7 +79,8 @@ public class MemberController {
 
 
     @PostMapping("/logout")
-    public ResponseDto logOut(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseDto logOut(@RequestBody MemberRequestDto memberRequestDto, HttpSession session) {
+        session.removeAttribute(MEMBER_ID);
         return ResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message("로그아웃 되었습니다.")

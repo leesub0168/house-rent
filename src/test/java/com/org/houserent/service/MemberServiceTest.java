@@ -1,5 +1,6 @@
 package com.org.houserent.service;
 
+import com.org.houserent.controller.dto.response.MemberLoginDto;
 import com.org.houserent.exception.DuplicateMemberException;
 import com.org.houserent.exception.NonExistMemberException;
 import com.org.houserent.exception.WrongPasswordException;
@@ -72,11 +73,12 @@ class MemberServiceTest {
         String password = "asgsdg";
 
         //when
-        MemberDto loginMember = memberService.login(userId, password);
+        MemberLoginDto loginMember = memberService.login(userId, password);
 
         //then
         assertEquals(loginMember.getName(), memberJoinDto.getName());
         assertEquals(loginMember.getEmail(), memberJoinDto.getEmail());
+        assertNotNull(loginMember.getId());
     }
     
     @Test

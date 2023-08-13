@@ -1,31 +1,29 @@
-package com.org.houserent.service.dto;
+package com.org.houserent.controller.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.org.houserent.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class MemberDto {
-    private String user_id;
+public class MemberLoginDto {
     private String name;
-    private String password;
     private String email;
+    private Long id;
 
     @Builder
-    public MemberDto(String user_id, String name, String password, String email) {
-        this.user_id = user_id;
+    public MemberLoginDto(String name, String email, Long id) {
         this.name = name;
-        this.password = password;
         this.email = email;
+        this.id = id;
     }
 
-    public MemberDto(Member member) {
+    public MemberLoginDto(Member member) {
         this.name = member.getName();
         this.email = member.getEmail();
-        this.user_id = member.getUserId();
-        this.password = member.getPassword();
+        this.id = member.getId();
     }
-
 }
