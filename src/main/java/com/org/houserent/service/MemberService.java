@@ -1,5 +1,6 @@
 package com.org.houserent.service;
 
+import com.org.houserent.controller.dto.response.MemberLoginDto;
 import com.org.houserent.domain.Member;
 import com.org.houserent.exception.DuplicateMemberException;
 import com.org.houserent.exception.NonExistMemberException;
@@ -43,7 +44,7 @@ public class MemberService {
     /**
      * 회원 로그인
      * */
-    public MemberDto login(String userId, String password) {
+    public MemberLoginDto login(String userId, String password) {
         Member member = memberRepository.findByUserIdAndWithdrawDateIsNull(userId)
                 .orElseThrow(() -> new NonExistMemberException("존재하지 않는 회원입니다."));
 
@@ -51,9 +52,10 @@ public class MemberService {
 
         updateLoginDate(member);
 
-        return MemberDto.builder()
+        return MemberLoginDto.builder()
                 .name(member.getName())
                 .email(member.getEmail())
+                .id(member.getId())
                 .build();
     }
 
