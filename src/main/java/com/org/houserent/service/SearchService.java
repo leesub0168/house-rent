@@ -45,8 +45,8 @@ public class SearchService {
 
 
         if (userId != null && !userId.isBlank()) {
-            Optional<BookMark> bookMarkByHouseIdAndMemberId = bookMarkRepository.findBookMarkByHouseIdAndMemberId(userId, house.get().getId());
-            bookMarkByHouseIdAndMemberId.ifPresent(bookMark -> searchResponseDto.setBookMarkId(bookMark.getId()));
+            Optional<BookMark> bookMark = bookMarkRepository.findBookMarkByHouseIdAndMemberId(userId, house.get().getId());
+            bookMark.ifPresent(bm -> searchResponseDto.setBookMarkId(bm.getId()));
         }
 
 
