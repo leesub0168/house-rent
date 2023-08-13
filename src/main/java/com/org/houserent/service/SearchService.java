@@ -13,9 +13,6 @@ import com.org.houserent.repository.BookMarkRepository;
 import com.org.houserent.repository.HouseRentContractRepository;
 import com.org.houserent.repository.HouseRepository;
 import com.org.houserent.repository.HouseSaleContractRepository;
-import com.org.houserent.service.dto.HouseDto;
-import com.org.houserent.service.dto.HouseRentContractDto;
-import com.org.houserent.service.dto.HouseSaleContractDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,9 +43,12 @@ public class SearchService {
         SearchResponseDto searchResponseDto = new SearchResponseDto();
         searchResponseDto.setHouse(new SearchHouseResponseDto(house.get()));
 
-        Optional<BookMark> bookMarkByHouseIdAndMemberId = bookMarkRepository.findBookMarkByHouseIdAndMemberId(userId, house.get().getId());
 
-        bookMarkByHouseIdAndMemberId.ifPresent(bookMark -> searchResponseDto.setBookMarkId(bookMark.getId()));
+        if (userId != null && !userId.isBlank()) {
+            Optional<BookMark> bookMarkByHouseIdAndMemberId = bookMarkRepository.findBookMarkByHouseIdAndMemberId(userId, house.get().getId());
+            bookMarkByHouseIdAndMemberId.ifPresent(bookMark -> searchResponseDto.setBookMarkId(bookMark.getId()));
+        }
+
 
         List<HouseSaleContract> houseSaleContractList = houseSaleContractRepository.findHouseSaleContractsByHouse(house.get());
         List<HouseRentContract> houseRentContractDtoList = houseRentContractRepository.findHouseRentContractsByHouse(house.get());
