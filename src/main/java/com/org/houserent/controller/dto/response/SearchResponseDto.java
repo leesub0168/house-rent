@@ -9,6 +9,7 @@ import java.util.List;
 @Setter
 public class SearchResponseDto {
     private SearchHouseResponseDto house;
+    private Long bookMarkId;
     private List<SearchHouseRentResponseDto> houseRentList;
     private List<SearchHouseSaleResponseDto> houseSaleList;
 }
