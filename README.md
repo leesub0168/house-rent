@@ -34,5 +34,7 @@
 - Jenkins
 - JPA
 - MySQL
+- Spring Data JPA
+- Spring Batch
 
 
