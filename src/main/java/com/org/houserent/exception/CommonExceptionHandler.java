@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.naming.AuthenticationException;
+
 @RestControllerAdvice
 @Slf4j
 public class CommonExceptionHandler {
@@ -39,5 +41,15 @@ public class CommonExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .message(e.getMessage())
                 .build();
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseDto handleAuthenticationException(Exception e) {
+        log.error(e.getClass().getSimpleName(), e);
+        return ResponseDto.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(e.getMessage())
+                .build();
+
     }
 }
