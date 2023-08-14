@@ -92,7 +92,7 @@ class SearchServiceTest {
 
         String keyword = "방화대로7가길 35";
 
-        SearchResponseDto searchResponseDto = searchService.searchAddress("setsd", keyword, true);
+        SearchResponseDto searchResponseDto = searchService.searchAddress(null, keyword, true);
 
         assertNotNull(searchResponseDto);
 
