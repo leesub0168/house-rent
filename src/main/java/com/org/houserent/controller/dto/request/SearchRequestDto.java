@@ -6,7 +6,7 @@ import java.util.Optional;
 
 @Getter
 public class SearchRequestDto {
-    private String userId;
+    private Long memberId;
     private String searchAddress;
     private boolean roadAddressYn;
 }

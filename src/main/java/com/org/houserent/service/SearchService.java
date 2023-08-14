@@ -30,7 +30,7 @@ public class SearchService {
     private final HouseSaleContractRepository houseSaleContractRepository;
     private final BookMarkRepository bookMarkRepository;
 
-    public SearchResponseDto searchAddress(String userId, String searchAddress, boolean roadAddressYn) {
+    public SearchResponseDto searchAddress(Long memberId, String searchAddress, boolean roadAddressYn) {
         Optional<House> house;
         if(roadAddressYn) {
             house = houseRepository.findHouseByRoadAddress(searchAddress);
@@ -44,8 +44,8 @@ public class SearchService {
         searchResponseDto.setHouse(new SearchHouseResponseDto(house.get()));
 
 
-        if (userId != null && !userId.isBlank()) {
-            Optional<BookMark> bookMark = bookMarkRepository.findBookMarkByHouseIdAndMemberId(userId, house.get().getId());
+        if (memberId != null) {
+            Optional<BookMark> bookMark = bookMarkRepository.findBookMarkByHouseIdAndMemberId(memberId, house.get().getId());
             bookMark.ifPresent(bm -> searchResponseDto.setBookMarkId(bm.getId()));
         }
 
