@@ -30,8 +30,6 @@
 ## 사용 기술
 - Java
 - Spring Boot
-- AWS
-- Jenkins
 - JPA
 - MySQL
 - Spring Data JPA
