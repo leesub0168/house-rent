@@ -6,6 +6,7 @@ import com.org.houserent.domain.HouseSaleContract;
 import com.org.houserent.util.PublicApiClient;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -20,15 +21,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class PublicApiConfiguration {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory emf;
     private final PublicApiClient publicApiClient;
+    private final String YEAR = String.valueOf(LocalDateTime.now().getYear());
 
     @Bean
     public Job callHouseRentApiJob() {
@@ -78,12 +82,12 @@ public class PublicApiConfiguration {
 
     @Bean
     public ItemProcessor<House, List<HouseRentContract>> houseRentContractProcessor() {
-        return new HouseRentContractItemProcessor(publicApiClient);
+        return new HouseRentContractItemProcessor(publicApiClient, YEAR);
     }
 
     @Bean
     public ItemProcessor<House, List<HouseSaleContract>> houseSaleContractProcessor() {
-        return new HouseSaleContractItemProcessor(publicApiClient);
+        return new HouseSaleContractItemProcessor(publicApiClient, YEAR);
     }
 
     @Bean

@@ -14,9 +14,10 @@ import java.util.List;
 public class HouseSaleContractItemProcessor implements ItemProcessor<House, List<HouseSaleContract>> {
 
     private final PublicApiClient publicApiClient;
+    private final String year;
 
     @Override
     public List<HouseSaleContract> process(House house) throws Exception {
-        return publicApiClient.getHouseSaleContractInfo(house);
+        return publicApiClient.getHouseSaleContractInfo(house, year);
     }
 }

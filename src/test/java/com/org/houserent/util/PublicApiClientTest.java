@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,8 +74,10 @@ class PublicApiClientTest {
         House house = makeHouse();
         houseRepository.save(house);
 
+        String year = String.valueOf(LocalDateTime.now().getYear());
+
         //then
-        assertEquals(0, publicApiClient.getHouseSaleContractInfo(house).size());
+        assertEquals(0, publicApiClient.getHouseSaleContractInfo(house, year).size());
     }
 
     @Test
@@ -83,8 +86,10 @@ class PublicApiClientTest {
         House house = makeHouse();
         houseRepository.save(house);
 
+        String year = String.valueOf(LocalDateTime.now().getYear());
+
         //when
-        List<HouseSaleContract> houseSaleContractInfo = publicApiClient.getHouseSaleContractInfo(house);
+        List<HouseSaleContract> houseSaleContractInfo = publicApiClient.getHouseSaleContractInfo(house, year);
 
         //then
         for (HouseSaleContract houseSaleContract : houseSaleContractInfo) {
@@ -98,8 +103,9 @@ class PublicApiClientTest {
         House house = makeHouse2();
         houseRepository.save(house);
 
+        String year = String.valueOf(LocalDateTime.now().getYear());
         //when
-        List<HouseRentContract> houseRentContractInfo = publicApiClient.getHouseRentContractInfo(house);
+        List<HouseRentContract> houseRentContractInfo = publicApiClient.getHouseRentContractInfo(house, year);
 
         //then
         for (HouseRentContract houseRentContract : houseRentContractInfo) {

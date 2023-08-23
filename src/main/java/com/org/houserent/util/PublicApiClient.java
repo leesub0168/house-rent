@@ -64,13 +64,13 @@ public class PublicApiClient {
      * http://openapi.seoul.go.kr:8088/인증키/요청파일_타입/서비스명/요청시작위치/요청종료위치 +
      *      /접수연도/자치구코드/자치구명/법정동코드/지번구분/지번구분명/본번/부번/건물명/계약일/건물용도
      * */
-    public List<HouseSaleContract> getHouseSaleContractInfo(House house) {
+    public List<HouseSaleContract> getHouseSaleContractInfo(House house, String year) {
         List<HouseSaleContract> houseSaleContracts = new ArrayList<>();
 
         URI uri = makeUri(
                 key, resultType, sale,
                 start_index, end_index,
-                getCurrentYear(), house.getSgg_cd(),
+                year, house.getSgg_cd(),
                 house.getSgg_nm(), house.getBjdong_cd(),
                 "{land_gbn}", "{land_gbn_nm}", String.format("%04d", house.getLand_main_num()),
                 String.format("%04d", house.getLand_sub_num())
@@ -98,12 +98,12 @@ public class PublicApiClient {
      * http://openapi.seoul.go.kr:8088/인증키/요청파일_타입/서비스명/요청시작위치/요청종료위치 +
      *      /접수연도/자치구코드/자치구명/법정동코드/지번구분/본번/부번/계약일/건물명/건물용도
      * */
-    public List<HouseRentContract> getHouseRentContractInfo(House house) throws JsonProcessingException {
+    public List<HouseRentContract> getHouseRentContractInfo(House house, String year) throws JsonProcessingException {
 
         URI uri = makeUri(
                 key, resultType, rent,
                 start_index, end_index,
-                getCurrentYear(), house.getSgg_cd(),
+                year, house.getSgg_cd(),
                 house.getSgg_nm(), house.getBjdong_cd(),
                 "{land_gbn}", String.format("%04d", house.getLand_main_num()),
                 String.format("%04d", house.getLand_sub_num())
