@@ -17,10 +17,8 @@ class HouseServiceTest {
     @Autowired
     HouseService houseService;
 
-    @Test
-    public void 집_정보_저장_아이디로_집_조회() throws Exception {
-        //given
-        HouseDto houseDto = HouseDto.builder()
+    public HouseDto makeHouseDto() {
+        return HouseDto.builder()
                 .sgg_cd("11500")
                 .sgg_nm("강서구")
                 .city("서울특별시")
@@ -35,6 +33,12 @@ class HouseServiceTest {
                 .land_sub_num(5)
                 .detail_address("현대홈타운")
                 .build();
+    }
+
+    @Test
+    public void 집_정보_저장_아이디로_집_조회() throws Exception {
+        //given
+        HouseDto houseDto = makeHouseDto();
         //when
         Long id = houseService.saveHouse(houseDto);
         HouseDto findHouseDto = houseService.findHouseById(id);
@@ -47,22 +51,28 @@ class HouseServiceTest {
     @Test
     public void 도로명_주소_검색() throws Exception {
         //given
-        String searchAddress = "올림픽로32길 42-23";
-        Optional<HouseDto> findHouse = houseService.findHouseByRoadAddress(searchAddress);
-        //when
+        HouseDto houseDto = makeHouseDto();
+        Long id = houseService.saveHouse(houseDto);
 
-        assertEquals("올림픽로32길", findHouse.get().getRoad_name());
+        //when
+        String searchAddress = "방화대로7가길 35";
+        Optional<HouseDto> findHouse = houseService.findHouseByRoadAddress(searchAddress);
+
+        assertEquals("방화대로7가길", findHouse.get().getRoad_name());
         //then
     }
     
     @Test
     public void 지번_주소_검색() throws Exception {
         //given
-        String searchAddress = "방이동 100-23";
+        HouseDto houseDto = makeHouseDto();
+        Long id = houseService.saveHouse(houseDto);
+
+        String searchAddress = "공항동 658-5";
         Optional<HouseDto> findHouse = houseService.findHouseByLandAddress(searchAddress);
 
         //when
-        assertEquals("올림픽로32길", findHouse.get().getRoad_name());
+        assertEquals("방화대로7가길", findHouse.get().getRoad_name());
         //then
     }
 }
