@@ -52,4 +52,34 @@ public class CommonExceptionHandler {
                 .build();
 
     }
+
+    @ExceptionHandler(NonExistHouseException.class)
+    public ResponseDto handleNonExistHouseException(Exception e) {
+        log.error(e.getClass().getSimpleName(), e);
+        return ResponseDto.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(e.getMessage())
+                .build();
+
+    }
+
+    @ExceptionHandler(NonExistAddressException.class)
+    public ResponseDto handleNonExistAddressException(Exception e) {
+        log.error(e.getClass().getSimpleName(), e);
+        return ResponseDto.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(e.getMessage())
+                .build();
+
+    }
+
+    @ExceptionHandler(NonExistDataException.class)
+    public ResponseDto handleNonExistDataException(Exception e) {
+        log.error(e.getClass().getSimpleName(), e);
+        return ResponseDto.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(e.getMessage())
+                .build();
+
+    }
 }
