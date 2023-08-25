@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: real-db
   datasource:
     url: jdbc:mariadb://house-rent-db.c1vqmruaz8nj.ap-northeast-2.rds.amazonaws.com:3306/house_rent?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
     username: leesub0168
@@ -11,6 +13,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  session:
+    store-type: jdbc
 
 logging:
   level:
