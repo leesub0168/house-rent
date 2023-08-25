@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://house-rent-db.c1vqmruaz8nj.ap-northeast-2.rds.amazonaws.com:3306/house_rent?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
+    username: leesub0168
+    password: dltnqls^6^
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.MYSQL5InnoDBDialect
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
+
+
+seoul-api:
+  baseUrl: "http://openapi.seoul.go.kr:8088"
+  key: "5a75446d6b6c656539375244465959"
+  resultType: "json"
+  rent: "tbLnOpendataRentV"
+  sale: "tbLnOpendataRtmsV"
+
+juso-api:
+  baseUrl: "https://business.juso.go.kr/addrlink/addrLinkApi.do"
+  key: "U01TX0FVVEgyMDIzMDYwNzE4MDcyNzExMzgzMTI="
+  resultType: "json"
