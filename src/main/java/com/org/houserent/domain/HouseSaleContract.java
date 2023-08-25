@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HouseSaleContract {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "house_sale_contract_seq")
+    @SequenceGenerator(name = "house_sale_contract_seq", sequenceName = "house_sale_contract_seq", allocationSize = 1)
     @Column(name = "house_sale_contract_id")
     private Long id;
 
