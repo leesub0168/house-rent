@@ -10,7 +10,8 @@ import java.util.Objects;
 @Getter
 @Table(name = "House")
 public class House {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "house_seq")
+    @SequenceGenerator(name = "house_seq", sequenceName = "house_seq", allocationSize = 1)
     @Column(name = "house_id")
     private Long id;
 

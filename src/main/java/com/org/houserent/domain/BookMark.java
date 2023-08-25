@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookMark {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_mark_seq")
+    @SequenceGenerator(name = "book_mark_seq", sequenceName = "book_mark_seq", allocationSize = 1)
     @Column(name = "bookmark_id")
     private Long id;
 
