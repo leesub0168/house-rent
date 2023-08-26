@@ -34,5 +34,7 @@
 - MySQL
 - Spring Data JPA
 - Spring Batch
+- AWS EC2
+- AWS RDS
 
 
