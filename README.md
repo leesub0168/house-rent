@@ -31,10 +31,9 @@
 - Java
 - Spring Boot
 - JPA
-- MySQL
 - Spring Data JPA
 - Spring Batch
 - AWS EC2
-- AWS RDS
+- AWS RDS (MariaDB)
 
 
