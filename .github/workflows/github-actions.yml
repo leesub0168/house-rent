@@ -34,7 +34,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     - name: Setup MariaDB
-      uses: samin/mysql-action@V1
+      uses: samin/mysql-action@v1
       with: 
         character set server: 'utf8mb4'
         mysql database: 'house-rent-db.c1vqmruaz8nj.ap-northeast-2.rds.amazonaws.com'
