@@ -13,6 +13,12 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET_NAME: house-rent-s3
+  CODE_DEPLOY_APPLICATION_NAME: house-rent-deploy
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: house-rent-deploy-agent
+  
 permissions:
   contents: read
 
