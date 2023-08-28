@@ -33,6 +33,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    - name: Setup MariaDB
+      uses: samin/mysql-action@V1
+      with: 
+        character set server: 'utf8mb4'
+        mysql database: 'house-rent-db.c1vqmruaz8nj.ap-northeast-2.rds.amazonaws.com'
+        mysql user: 'leesub0168'
+        mysql password: 'dltnqls^6^'
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
     - name: Build with Gradle
