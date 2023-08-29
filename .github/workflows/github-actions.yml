@@ -38,14 +38,7 @@ jobs:
     #  run: chmod +x ./gradlew
     #- name: Build with Gradle
     #  run: ./gradlew build
-
-    #- name: Configure AWS credentials		#aws credentials 생성
-    #  uses: aws-actions/configure-aws-credentials@v1
-    #  with:
-    #    aws-access-key-id: ${{ secrets.AWS_ACCESS_ID }}	
-    #    aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY }} 
-    #    aws-region: ${{env.AWS_REGION}}
-        
+    
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
@@ -53,5 +46,11 @@ jobs:
         role-to-assume: arn:aws:iam::634903875227:role/sts.amazonaws.com
 
   # s3 업로드
-    - name: upload build directory to s3
-      run: aws s3 cp dist/ s3://your_bucket --recursive  #s3 bucket에 업로드
+    # AWS S3에 업로드
+    - name: Upload to AWS S3
+      run: |
+        aws deploy push \
+          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+          --ignore-hidden-files \
+          --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
+          --source .
