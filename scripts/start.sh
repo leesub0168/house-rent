@@ -17,7 +17,7 @@ cp $REPOSITORY/$PROJECT_NAME/build/libs/*.jar $REPOSITORY/
 JAR_NAME=$(ls -tr $REPOSITORY/ | grep *.jar | tail -n 1)
 # jar 파일 실행
 echo "$TIME_NOW > $JAR_NAME 파일 실행" >> $DEPLOY_LOG
-nohup java -jar JAR_NAME > $APP_LOG 2> $ERROR_LOG &
+nohup java -jar $JAR_NAME > $APP_LOG 2> $ERROR_LOG &
 
-CURRENT_PID=$(pgrep -f JAR_NAME)
+CURRENT_PID=$(pgrep -f $JAR_NAME)
 echo "$TIME_NOW > 실행된 프로세스 아이디 $CURRENT_PID 입니다." >> $DEPLOY_LOG
