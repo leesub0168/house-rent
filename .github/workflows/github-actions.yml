@@ -34,10 +34,10 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    #- name: Run chmod to make gradlew executable
-    #  run: chmod +x ./gradlew
-    #- name: Build with Gradle
-    #  run: ./gradlew build
+    - name: Run chmod to make gradlew executable
+      run: chmod +x ./gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
     
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v3
