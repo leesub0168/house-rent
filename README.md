@@ -33,7 +33,12 @@
 - JPA
 - Spring Data JPA
 - Spring Batch
-- AWS EC2
-- AWS RDS (MariaDB)
+- Server
+  - AWS EC2 - Amazon Linux
+- DataBase
+  - AWS RDS (MariaDB)
+- CI/CD
+  - Github Actions
+  - AWS CodeDeploy
 
 
