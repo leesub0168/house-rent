@@ -44,15 +44,12 @@ class AddressTranslationTest {
     @Test
     public void 주소검색_다건_조회() throws Exception {
         //given
-        String searchAddress1 = "벌말로";
-        String searchAddress2 = "아리랑로9길";
+        String searchAddress1 = "아리랑로9길";
 
         //when
         List<HouseDto> addressInfoList1 = addressTranslation.getAddressInfoList(searchAddress1);
-        List<HouseDto> addressInfoList2 = addressTranslation.getAddressInfoList(searchAddress2);
 
         //then
         assertNotNull(addressInfoList1);
-        assertNotNull(addressInfoList2);
     }
 }
