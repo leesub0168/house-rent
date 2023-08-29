@@ -50,8 +50,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v3
       with:
         aws-region: ${{env.AWS_REGION}}
-        role-to-assume: arn:aws:iam::634903875227:role/house-rent-s3
-        role-session-name: house-rent-s3
+        role-to-assume: arn:aws:iam::634903875227:role/sts.amazonaws.com
 
   # s3 업로드
     - name: upload build directory to s3
