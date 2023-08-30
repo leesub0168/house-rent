@@ -38,7 +38,7 @@
 - DataBase
   - AWS RDS (MariaDB)
 - CI/CD
-  - Github Actions
+  - GitHub Actions
   - AWS CodeDeploy
 
 
