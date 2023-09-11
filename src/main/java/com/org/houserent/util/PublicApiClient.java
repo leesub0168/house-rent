@@ -162,7 +162,7 @@ public class PublicApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofSeconds(1L))
+                .timeout(Duration.ofSeconds(2L))
                 .blockOptional().orElseThrow(() -> new IllegalArgumentException("공공 api 호출 실패"));
     }
 
