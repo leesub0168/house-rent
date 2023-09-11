@@ -25,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -161,6 +162,7 @@ public class PublicApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
+                .timeout(Duration.ofSeconds(1L))
                 .blockOptional().orElseThrow(() -> new IllegalArgumentException("공공 api 호출 실패"));
     }
 
