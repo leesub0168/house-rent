@@ -40,5 +40,6 @@
 - CI/CD
   - GitHub Actions
   - AWS CodeDeploy
+  - AWS S3
 
 
